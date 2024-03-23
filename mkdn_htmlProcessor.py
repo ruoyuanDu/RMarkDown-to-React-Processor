@@ -26,9 +26,21 @@ def processor(input_file):
             for h1 in h1_tags:
                 h1.name = 'h3'
 
+            # remveoe all \n from <p> tag contents to avoid incorrect non-space between words
+            p_tags = soup.find_all('p')
+            for p_tag in p_tags:
+                p_text = ' '.join(p_tag.stripped_strings).replace('\n', ' ')
+                print(p_text)
+                if p_text:
+                    # Replace the content of the <p> tag
+                    if p_tag.string is None:
+                        p_tag.string = p_text
+                    else:
+                        p_tag.string.replace_with(p_text)
+
 
             body_content = soup.body.extract()
-            midOutput.write(str(body_content))
+            midOutput.write(str(body_content)) 
         
         with open('./mid/' + input_file.split('.')[0]+'_mid', 'r') as midInput,  open('./output/'+input_file.split('.')[0]+'_output', 'w', encoding='utf-8') as output:
             lines = midInput.readlines()[1:-1]

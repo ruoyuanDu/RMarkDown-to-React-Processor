@@ -4,8 +4,10 @@ import argparse
 
 def reactProcessor(input):
     inputName = str(input)
-    folder_path = './output/'
+    folder_path = './output/' 
     words = inputName.split('_')[0].split('-')
+    # remove numbers from the function name if any
+    words = [word for word in words if not word.isdigit()]
     # Capitalize the first letter of each word and join them without hyphens
     functionName = ''.join([word.capitalize() for word in words])
     with open(folder_path+input, 'r') as input:
@@ -38,6 +40,7 @@ def main():
         reactProcessor(args.input_file)
     else:
         if args.input_folder_path:
+            importList = []
             dataList = []
             files = os.listdir(args.input_folder_path)
             for filename in files:
@@ -45,16 +48,24 @@ def main():
                     print(filename)
                     reactProcessor(filename)
                     words = filename.split('_')[0].split('-')
+                    # remove numbers from the function name if any
+                    words = [word for word in words if not word.isdigit()]
                     # Capitalize the first letter of each word and join them without hyphens
                     functionName = ''.join([word.capitalize() for word in words])
                     dataList.append(
-                        {'component': "<"+functionName+" />", 'path':filename.split('_')[0], 'title':' '.join(filename.split('_')[0].split('-'))}
+                        {'component': '<'+functionName+' />', 'path':filename.split('_')[0], 'title':' '.join(filename.split('_')[0].split('-'))}
                     )
+                    # parent folder name of contents
+                    parentFolder = "RVisualization"
+                    importList.append("import "+functionName+" from" + " '../" + parentFolder+"/contents/"+ filename+"_react'")
             # json_data = json.dumps(dataList, indent=2)
             file_path = "data.js"
 
             with open(file_path, 'w') as json_file:
-                json_file.write('const data=[')
+                json_file.write("import React from 'react';\n")
+                for item in importList:
+                    json_file.write(str(item)+'\n')
+                json_file.write('const data=[')              
                 for item in dataList:
                     json_file.write(str(item)+',' + '\n')
                 json_file.write(']')
