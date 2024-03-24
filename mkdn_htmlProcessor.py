@@ -27,17 +27,25 @@ def processor(input_file):
                 h1.name = 'h3'
 
 
-            # remveoe all \n from <p> tag contents to avoid incorrect non-space between words
-            p_tags = soup.find_all('p')
-            for p_tag in p_tags:
-                p_text = ' '.join(p_tag.stripped_strings).replace('\n', ' ')
-                print(p_text)
-                if p_text:
-                    # Replace the content of the <p> tag
-                    if p_tag.string is None:
-                        p_tag.string = p_text
-                    else:
-                        p_tag.string.replace_with(p_text)
+            # # remveoe all \n from <p> tag contents to avoid incorrect non-space between words
+            # p_tags = soup.find_all('p')
+            # for p_tag in p_tags:
+            #     p_text = ' '.join(p_tag.stripped_strings).replace('\n', ' ')
+            #     print(p_text)
+            #     # Replace the content of the <p> tag while preserving its structure
+            #     for child in p_tag.children:
+            #         if isinstance(child, str):
+            #             child.replace_with(child.replace('\n', ' '))
+
+            # h_tags = soup.find_all(re.compile('^h\d'))
+
+            # # Loop through each <h> tag
+            # for h_tag in h_tags:
+            #     # Loop through the children of the tag
+            #     for child in h_tag.children:
+            #         # If the child is a string and the parent tag is not <pre> or <code>, remove newline characters from it
+            #         if isinstance(child, str):
+            #             child.replace_with(child.replace('\n', ' '))
 
 
             body_content = soup.body.extract()
@@ -91,6 +99,7 @@ def processor(input_file):
             # Define a replacement pattern
             replacement = r'</a></span><br />'
             text = re.sub(pattern, replacement, text)
+
 
 
             output.write(text)
