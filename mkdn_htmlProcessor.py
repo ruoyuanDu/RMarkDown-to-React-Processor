@@ -65,6 +65,17 @@ def processor(input_file):
                     lines[i] = modified_line_final
                 if line.startswith('<!--'):
                     lines[i] = ''
+                
+                # add <br /> for tabluar table data at the beginning of each line
+                     # Add <br /> to patterns:
+                    '''
+                        <br />SepalWidthCm     2.0
+                        <br />PetalLengthCm    1.0
+                        <br />PetalWidthCm     0.1
+                    '''
+                pattern = r"^[0-9a-zA-Z#&{[(-].*(?<!</p>)$"
+                if re.match(pattern, line.strip()):
+                    lines[i] = "<br />"+line
             text = ''.join(lines)
             # Add <pre> and <code> 
             pattern = r'<pre><code>(.*?)</code></pre>'
