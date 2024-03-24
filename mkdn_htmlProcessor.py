@@ -26,6 +26,7 @@ def processor(input_file):
             for h1 in h1_tags:
                 h1.name = 'h3'
 
+
             # remveoe all \n from <p> tag contents to avoid incorrect non-space between words
             p_tags = soup.find_all('p')
             for p_tag in p_tags:
