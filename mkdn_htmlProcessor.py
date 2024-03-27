@@ -88,7 +88,7 @@ def processor(input_file):
             # Add <pre> and <code> 
             pattern = r'<pre><code>(.*?)</code></pre>'
             pattern2 = r'<pre class="sourceCode r"><code class="sourceCode r">(.*?)</code></pre>'
-            replacement = r"<pre className='demo-highlight sourceCode r'><code className='sourceCode r'>\1</code></pre>"
+            replacement = r"<pre className='demo-highlight sourceCode r rcss'><code className='sourceCode r'>\1</code></pre>"
             text = re.sub(pattern, replacement, text, flags=re.DOTALL)
             text = re.sub(pattern2, replacement, text, flags=re.DOTALL)
 
