@@ -24,17 +24,19 @@ def reactProcessor(input):
             img_tag['src'] = new_src
             print(img_tag['src'])
 
-        if soup.find('li', id='stepwise-instructions'):
+        # if soup.find('li', id='stepwise-instructions'):
+        if soup.find('ul', attrs={'role': 'tablist'}):
             beginning = [
                 "import React from 'react'; \n",
                 "import {useRCustomEffect} from '../../useCustomEffect'; \n",
-                "import AddTabset from '../../js/addCodeFoldingTab'; \n",
+                # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
+                 "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
                 "import img"+functionName+" from '../" + src + "';\n", 
                 # capitalize the first letter of the filename for the function component
                 # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
                 "export default function " + functionName + "(){\n",
                 "useRCustomEffect()\n",
-                "AddTabset()\n",
+                "AddTabsetQuarto()\n",
                 "return ( <div>\n"  
             ]
         else:
@@ -58,8 +60,8 @@ def reactProcessor(input):
         # First Replace { and } with '&#123;' and '&#125;'
         html_txt = html_txt.replace('{', '&#123;').replace('}', '&#125;')
         # Then find the first <img > tag and change the src to the right format of {}
-        img_src_pattern = r'<img\s+src="&#123;([^"]*)&#125;"(?:[^>]*)\s*\/>'
-        replacement = r'<img src={\1} />'
+        img_src_pattern = r'<img\s+([^>]*?)src="&#123;([^"]*)&#125;"(?:[^>]*)\s*\/>'
+        replacement = r'<img \1src={\2} />'
         replaced_html = re.sub(img_src_pattern, replacement, html_txt)
 
         # change all classname to class
