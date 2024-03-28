@@ -26,27 +26,11 @@ def processor(input_file):
             for h1 in h1_tags:
                 h1.name = 'h3'
 
-
-            # # remveoe all \n from <p> tag contents to avoid incorrect non-space between words
-            # p_tags = soup.find_all('p')
-            # for p_tag in p_tags:
-            #     p_text = ' '.join(p_tag.stripped_strings).replace('\n', ' ')
-            #     print(p_text)
-            #     # Replace the content of the <p> tag while preserving its structure
-            #     for child in p_tag.children:
-            #         if isinstance(child, str):
-            #             child.replace_with(child.replace('\n', ' '))
-
-            # h_tags = soup.find_all(re.compile('^h\d'))
-
-            # # Loop through each <h> tag
-            # for h_tag in h_tags:
-            #     # Loop through the children of the tag
-            #     for child in h_tag.children:
-            #         # If the child is a string and the parent tag is not <pre> or <code>, remove newline characters from it
-            #         if isinstance(child, str):
-            #             child.replace_with(child.replace('\n', ' '))
-
+            # remove R default copy button
+            buttons_to_remove = soup.find_all('button', {'class': 'code-copy-button', 'title': 'Copy to Clipboard'})
+            if buttons_to_remove: 
+                for button in buttons_to_remove:
+                    button.extract()
 
             body_content = soup.body.extract()
             midOutput.write(str(body_content)) 
