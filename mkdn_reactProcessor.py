@@ -28,10 +28,11 @@ def reactProcessor(input):
         if soup.find('ul', attrs={'role': 'tablist'}):
             beginning = [
                 "import React from 'react'; \n",
+                "import {Link} from 'react-router-dom'; \n",
                 "import {useRCustomEffect} from '../../useCustomEffect'; \n",
                 # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
                  "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
-                "import img"+functionName+" from '../" + src + "';\n", 
+                "import img"+functionName+" from '../" + src + "'; \n", 
                 # capitalize the first letter of the filename for the function component
                 # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
                 "export default function " + functionName + "(){\n",
@@ -42,6 +43,7 @@ def reactProcessor(input):
         else:
             beginning = [
                 "import React from 'react'; \n",
+                "import {Link} from 'react-router-dom'; \n",
                 "import {useRCustomEffect} from '../../useCustomEffect'; \n",
                 "import img"+functionName+" from '../" + src + "';\n", 
                 # capitalize the first letter of the filename for the function component
@@ -63,6 +65,11 @@ def reactProcessor(input):
         img_src_pattern = r'<img\s+([^>]*?)src="&#123;([^"]*)&#125;"(?:[^>]*)\s*\/>'
         replacement = r'<img \1src={\2} />'
         replaced_html = re.sub(img_src_pattern, replacement, html_txt)
+
+        # Replace all <a> tag with <Link>
+        pattern = r'<a\s+href="(.*?)">(.*?)<\/a>'
+        replacement = r'<Link to="\1">\2</Link>'
+        replaced_html = re.sub(pattern, replacement, replaced_html)
 
         # change all classname to class
         final_html = replaced_html.replace('classname', 'class')
