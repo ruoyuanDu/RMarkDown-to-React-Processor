@@ -66,8 +66,8 @@ def reactProcessor(input):
         replacement = r'<img \1src={\2} />'
         replaced_html = re.sub(img_src_pattern, replacement, html_txt)
 
-        # Replace all <a> tag with <Link>
-        pattern = r'<a\s+href="(.*?)">(.*?)<\/a>'
+        # Replace all <a> tag with <Link>, exclude ones with <a href="#"> as <Link> can't be used to point to sections under same page
+        pattern = r'<a\s+href="([^#].*?)">(.*?)<\/a>'
         replacement = r'<Link to="\1">\2</Link>'
         replaced_html = re.sub(pattern, replacement, replaced_html)
 
