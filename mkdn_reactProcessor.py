@@ -98,7 +98,7 @@ def reactProcessor(input):
         # exclude <a id="downloadData"
         # pattern = r'<a\s+href="([^#].*?)">(.*?)<\/a>'
         pattern = r'<a\s+href="(?!.*?id="downloadData")[^#].*?">(.*?)<\/a>'
-        replacement = r'<Link to="\1">\2</Link>'
+        replacement = r'<Link to="\1">\1</Link>'
         replaced_html = re.sub(pattern, replacement, replaced_html)
 
         # change all classname to class
