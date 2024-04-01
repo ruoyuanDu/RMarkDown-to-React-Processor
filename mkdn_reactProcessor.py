@@ -22,36 +22,64 @@ def reactProcessor(input):
             img_tag['src'] = ""
             # Replace the src attribute with the desired value
             img_tag['src'] = new_src
-            print(img_tag['src'])
-
-        # if soup.find('li', id='stepwise-instructions'):
-        if soup.find('ul', attrs={'role': 'tablist'}):
-            beginning = [
-                "import React from 'react'; \n",
-                "import {Link} from 'react-router-dom'; \n",
-                "import {useRCustomEffect} from '../../useCustomEffect'; \n",
-                # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
-                 "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
-                "import img"+functionName+" from '../" + src + "'; \n", 
-                # capitalize the first letter of the filename for the function component
-                # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
-                "export default function " + functionName + "(){\n",
-                "useRCustomEffect()\n",
-                "AddTabsetQuarto()\n",
-                "return ( <div>\n"  
-            ]
+            img_tag['class'] = 'cover-img'
+   
+        # exclude case where img_tag is not found, so does src
+        if img_tag:
+            # if soup.find('li', id='stepwise-instructions'):
+            if soup.find('ul', attrs={'role': 'tablist'}):
+                beginning = [
+                    "import React from 'react'; \n",
+                    "import {Link} from 'react-router-dom'; \n",
+                    "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
+                    # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
+                    "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
+                    "import img"+functionName+" from '../" + src + "'; \n", 
+                    # capitalize the first letter of the filename for the function component
+                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
+                    "export default function " + functionName + "(){\n",
+                    "useRCustomEffect()\n",
+                    "AddTabsetQuarto()\n",
+                    "return ( <div>\n"  
+                ]
+            else:
+                beginning = [
+                    "import React from 'react'; \n",
+                    "import {Link} from 'react-router-dom'; \n",
+                    "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
+                    "import img"+functionName+" from '../" + src + "';\n", 
+                    # capitalize the first letter of the filename for the function component
+                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
+                    "export default function " + functionName + "(){\n",
+                    "useRCustomEffect()\n",            
+                    "return ( <div>\n"  
+                ]
         else:
-            beginning = [
-                "import React from 'react'; \n",
-                "import {Link} from 'react-router-dom'; \n",
-                "import {useRCustomEffect} from '../../useCustomEffect'; \n",
-                "import img"+functionName+" from '../" + src + "';\n", 
-                # capitalize the first letter of the filename for the function component
-                # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
-                "export default function " + functionName + "(){\n",
-                "useRCustomEffect()\n",            
-                "return ( <div>\n"  
-            ]
+            if soup.find('ul', attrs={'role': 'tablist'}):
+                beginning = [
+                    "import React from 'react'; \n",
+                    "import {Link} from 'react-router-dom'; \n",
+                    "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
+                    # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
+                    "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
+                    # capitalize the first letter of the filename for the function component
+                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
+                    "export default function " + functionName + "(){\n",
+                    "useRCustomEffect()\n",
+                    "AddTabsetQuarto()\n",
+                    "return ( <div>\n"  
+                ]
+            else:
+                beginning = [
+                    "import React from 'react'; \n",
+                    "import {Link} from 'react-router-dom'; \n",
+                    "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
+                    # capitalize the first letter of the filename for the function component
+                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
+                    "export default function " + functionName + "(){\n",
+                    "useRCustomEffect()\n",            
+                    "return ( <div>\n"  
+                ]
         # htmlLines = input.readlines()
         ending = [
             "</div>\n)}"
@@ -67,7 +95,9 @@ def reactProcessor(input):
         replaced_html = re.sub(img_src_pattern, replacement, html_txt)
 
         # Replace all <a> tag with <Link>, exclude ones with <a href="#"> as <Link> can't be used to point to sections under same page
-        pattern = r'<a\s+href="([^#].*?)">(.*?)<\/a>'
+        # exclude <a id="downloadData"
+        # pattern = r'<a\s+href="([^#].*?)">(.*?)<\/a>'
+        pattern = r'<a\s+href="(?!.*?id="downloadData")[^#].*?">(.*?)<\/a>'
         replacement = r'<Link to="\1">\2</Link>'
         replaced_html = re.sub(pattern, replacement, replaced_html)
 
@@ -108,8 +138,8 @@ def main():
                         {'component': '<'+functionName+' />', 'path':filename.split('_')[0], 'title':' '.join(filename.split('_')[0].split('-'))}
                     )
                     # parent folder name of contents
-                    parentFolder = "RVisualization"
-                    importList.append("import "+functionName+" from" + " '../" + parentFolder+"/contents/"+ filename+"_react'")
+                    parentFolder = "dplyr"
+                    importList.append("import "+functionName+" from" + " '../RDataWrangling/" + parentFolder+"/contents/"+ filename+"_react'")
             # json_data = json.dumps(dataList, indent=2)
             file_path = "data.js"
 

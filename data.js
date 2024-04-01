@@ -1,42 +1,54 @@
 import React from 'react';
-import Ggplot2WrapLongTexts from '../RVisualization/contents/3-ggplot2-wrap-long-texts_output_react'
-import Ggplot2ReorderViolinPlots from '../RVisualization/contents/5-ggplot2-reorder-violin-plots_output_react'
-import Ggplot2ReorderStackingOfBars from '../RVisualization/contents/7-ggplot2-reorder-stacking-of-bars_output_react'
-import Ggplot2TitleLegendRemoval from '../RVisualization/contents/13-2-ggplot2-title-legend-removal_output_react'
-import Ggplot2RenameTitleLegend from '../RVisualization/contents/13-ggplot2-rename-title-legend_output_react'
-import Ggplot2ReorderLegendKeys from '../RVisualization/contents/8-ggplot2-reorder-legend-keys_output_react'
-import Ggplot2OverlapErrorbar from '../RVisualization/contents/3-ggplot2-overlap-errorbar_output_react'
-import Ggplot2RelocateLegendPosition from '../RVisualization/contents/10-ggplot2-relocate-legend-position_output_react'
-import Ggplot2ChangeLegendRowNumber from '../RVisualization/contents/11-ggplot2-change-legend-row-number_output_react'
-import Ggplot2CreatePoints from '../RVisualization/contents/18-ggplot2-create-points_output_react'
-import Ggplot2ReorderLegendColorbar from '../RVisualization/contents/9-ggplot2-reorder-legend-colorBar_output_react'
-import Ggplot2ReorderMultipleLegends from '../RVisualization/contents/12-ggplot2-reorder-multiple-legends_output_react'
-import Ggplot2ColorBrewerPalette from '../RVisualization/contents/15-ggplot2-color-brewer-palette_output_react'
-import Ggplot2ReorderBars from '../RVisualization/contents/4-ggplot2-reorder-bars_output_react'
-import Ggplot2ColorViridisPalette from '../RVisualization/contents/16-ggplot2-color-viridis-palette_output_react'
-import Ggplot2OvercrowdedDataPoints from '../RVisualization/contents/1-ggplot2-overcrowded-data-points_output_react'
-import Ggplot2ReorderFacetedPanels from '../RVisualization/contents/6-ggplot2-reorder-faceted-panels_output_react'
-import Ggplot2OvercrowdedTextLabels from '../RVisualization/contents/2-ggplot2-overcrowded-text-labels_output_react'
-import Ggplot2LegendRemove from '../RVisualization/contents/14-ggplot2-legend-remove_output_react'
-import Ggplot2PolarCoordSummary from '../RVisualization/contents/17-ggplot2-polar-coord-summary_output_react'
-const data=[{'component': '<Ggplot2WrapLongTexts />', 'path': '3-ggplot2-wrap-long-texts', 'title': '3 ggplot2 wrap long texts'},
-{'component': '<Ggplot2ReorderViolinPlots />', 'path': '5-ggplot2-reorder-violin-plots', 'title': '5 ggplot2 reorder violin plots'},
-{'component': '<Ggplot2ReorderStackingOfBars />', 'path': '7-ggplot2-reorder-stacking-of-bars', 'title': '7 ggplot2 reorder stacking of bars'},
-{'component': '<Ggplot2TitleLegendRemoval />', 'path': '13-2-ggplot2-title-legend-removal', 'title': '13 2 ggplot2 title legend removal'},
-{'component': '<Ggplot2RenameTitleLegend />', 'path': '13-ggplot2-rename-title-legend', 'title': '13 ggplot2 rename title legend'},
-{'component': '<Ggplot2ReorderLegendKeys />', 'path': '8-ggplot2-reorder-legend-keys', 'title': '8 ggplot2 reorder legend keys'},
-{'component': '<Ggplot2OverlapErrorbar />', 'path': '3-ggplot2-overlap-errorbar', 'title': '3 ggplot2 overlap errorbar'},
-{'component': '<Ggplot2RelocateLegendPosition />', 'path': '10-ggplot2-relocate-legend-position', 'title': '10 ggplot2 relocate legend position'},
-{'component': '<Ggplot2ChangeLegendRowNumber />', 'path': '11-ggplot2-change-legend-row-number', 'title': '11 ggplot2 change legend row number'},
-{'component': '<Ggplot2CreatePoints />', 'path': '18-ggplot2-create-points', 'title': '18 ggplot2 create points'},
-{'component': '<Ggplot2ReorderLegendColorbar />', 'path': '9-ggplot2-reorder-legend-colorBar', 'title': '9 ggplot2 reorder legend colorBar'},
-{'component': '<Ggplot2ReorderMultipleLegends />', 'path': '12-ggplot2-reorder-multiple-legends', 'title': '12 ggplot2 reorder multiple legends'},
-{'component': '<Ggplot2ColorBrewerPalette />', 'path': '15-ggplot2-color-brewer-palette', 'title': '15 ggplot2 color brewer palette'},
-{'component': '<Ggplot2ReorderBars />', 'path': '4-ggplot2-reorder-bars', 'title': '4 ggplot2 reorder bars'},
-{'component': '<Ggplot2ColorViridisPalette />', 'path': '16-ggplot2-color-viridis-palette', 'title': '16 ggplot2 color viridis palette'},
-{'component': '<Ggplot2OvercrowdedDataPoints />', 'path': '1-ggplot2-overcrowded-data-points', 'title': '1 ggplot2 overcrowded data points'},
-{'component': '<Ggplot2ReorderFacetedPanels />', 'path': '6-ggplot2-reorder-faceted-panels', 'title': '6 ggplot2 reorder faceted panels'},
-{'component': '<Ggplot2OvercrowdedTextLabels />', 'path': '2-ggplot2-overcrowded-text-labels', 'title': '2 ggplot2 overcrowded text labels'},
-{'component': '<Ggplot2LegendRemove />', 'path': '14-ggplot2-legend-remove', 'title': '14 ggplot2 legend remove'},
-{'component': '<Ggplot2PolarCoordSummary />', 'path': '17-ggplot2-polar-coord-summary', 'title': '17 ggplot2 polar coord summary'},
+import FilteringJoinTwoDatasets from '../RDataWrangling/dplyr/contents/17-filtering-join-two-datasets_output_react'
+import RepeatedOperationsOnMultipleColumn from '../RDataWrangling/dplyr/contents/13-repeated-operations-on-multiple-column_output_react'
+import CrossJoinTwoDatasets from '../RDataWrangling/dplyr/contents/19-cross-join-two-datasets_output_react'
+import KeepDistinctRows from '../RDataWrangling/dplyr/contents/7-keep-distinct-rows_output_react'
+import GroupedDataset from '../RDataWrangling/dplyr/contents/5-2-grouped-dataset_output_react'
+import CountObservations from '../RDataWrangling/dplyr/contents/15-count-observations_output_react'
+import ReorderColumns from '../RDataWrangling/dplyr/contents/12-reorder-columns_output_react'
+import SetOperations from '../RDataWrangling/dplyr/contents/21-set-operations_output_react'
+import BetweenARange from '../RDataWrangling/dplyr/contents/22-between-a-range_output_react'
+import ExtractASingleColumn from '../RDataWrangling/dplyr/contents/10-extract-a-single-column_output_react'
+import SelectRows from '../RDataWrangling/dplyr/contents/8-select-rows_output_react'
+import MutatingJoinTwoDatasets from '../RDataWrangling/dplyr/contents/16-mutating-join-two-datasets_output_react'
+import BindTwoDatasetsByColumnsRows from '../RDataWrangling/dplyr/contents/20-bind-two-datasets-by-columns-rows_output_react'
+import CountUniqueValues from '../RDataWrangling/dplyr/contents/23-count-unique-values_output_react'
+import GlimpseColumns from '../RDataWrangling/dplyr/contents/9-glimpse-columns_output_react'
+import DataMasking from '../RDataWrangling/dplyr/contents/24-data-masking_output_react'
+import SelectColumns from '../RDataWrangling/dplyr/contents/2-select-columns_output_react'
+import Summarize from '../RDataWrangling/dplyr/contents/5-1-summarize_output_react'
+import FilterRows from '../RDataWrangling/dplyr/contents/3-filter-rows_output_react'
+import Introduction from '../RDataWrangling/dplyr/contents/0-introduction_output_react'
+import NestJoinTwoDatasets from '../RDataWrangling/dplyr/contents/18-nest-join-two-datasets_output_react'
+import MutateColumns from '../RDataWrangling/dplyr/contents/4-mutate-columns_output_react'
+import Arrange from '../RDataWrangling/dplyr/contents/6-arrange_output_react'
+import RenameColumns from '../RDataWrangling/dplyr/contents/11-rename-columns_output_react'
+import PipeOperator from '../RDataWrangling/dplyr/contents/1-pipe-operator_output_react'
+import RowwiseOperations from '../RDataWrangling/dplyr/contents/14-rowwise-operations_output_react'
+const data=[{'component': '<FilteringJoinTwoDatasets />', 'path': '17-filtering-join-two-datasets', 'title': '17 filtering join two datasets'},
+{'component': '<RepeatedOperationsOnMultipleColumn />', 'path': '13-repeated-operations-on-multiple-column', 'title': '13 repeated operations on multiple column'},
+{'component': '<CrossJoinTwoDatasets />', 'path': '19-cross-join-two-datasets', 'title': '19 cross join two datasets'},
+{'component': '<KeepDistinctRows />', 'path': '7-keep-distinct-rows', 'title': '7 keep distinct rows'},
+{'component': '<GroupedDataset />', 'path': '5-2-grouped-dataset', 'title': '5 2 grouped dataset'},
+{'component': '<CountObservations />', 'path': '15-count-observations', 'title': '15 count observations'},
+{'component': '<ReorderColumns />', 'path': '12-reorder-columns', 'title': '12 reorder columns'},
+{'component': '<SetOperations />', 'path': '21-set-operations', 'title': '21 set operations'},
+{'component': '<BetweenARange />', 'path': '22-between-a-range', 'title': '22 between a range'},
+{'component': '<ExtractASingleColumn />', 'path': '10-extract-a-single-column', 'title': '10 extract a single column'},
+{'component': '<SelectRows />', 'path': '8-select-rows', 'title': '8 select rows'},
+{'component': '<MutatingJoinTwoDatasets />', 'path': '16-mutating-join-two-datasets', 'title': '16 mutating join two datasets'},
+{'component': '<BindTwoDatasetsByColumnsRows />', 'path': '20-bind-two-datasets-by-columns-rows', 'title': '20 bind two datasets by columns rows'},
+{'component': '<CountUniqueValues />', 'path': '23-count-unique-values', 'title': '23 count unique values'},
+{'component': '<GlimpseColumns />', 'path': '9-glimpse-columns', 'title': '9 glimpse columns'},
+{'component': '<DataMasking />', 'path': '24-data-masking', 'title': '24 data masking'},
+{'component': '<SelectColumns />', 'path': '2-select-columns', 'title': '2 select columns'},
+{'component': '<Summarize />', 'path': '5-1-summarize', 'title': '5 1 summarize'},
+{'component': '<FilterRows />', 'path': '3-filter-rows', 'title': '3 filter rows'},
+{'component': '<Introduction />', 'path': '0-introduction', 'title': '0 introduction'},
+{'component': '<NestJoinTwoDatasets />', 'path': '18-nest-join-two-datasets', 'title': '18 nest join two datasets'},
+{'component': '<MutateColumns />', 'path': '4-mutate-columns', 'title': '4 mutate columns'},
+{'component': '<Arrange />', 'path': '6-arrange', 'title': '6 arrange'},
+{'component': '<RenameColumns />', 'path': '11-rename-columns', 'title': '11 rename columns'},
+{'component': '<PipeOperator />', 'path': '1-pipe-operator', 'title': '1 pipe operator'},
+{'component': '<RowwiseOperations />', 'path': '14-rowwise-operations', 'title': '14 rowwise operations'},
 ]

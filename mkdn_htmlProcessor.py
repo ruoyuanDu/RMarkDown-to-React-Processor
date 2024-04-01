@@ -91,8 +91,6 @@ def processor(input_file):
             text = re.sub(r'</div>\s*<!--\s*/content\s*-->', '</div>', text)
 
 
-
-
             output.write(text)
 
 def main():
