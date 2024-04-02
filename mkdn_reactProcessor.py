@@ -14,8 +14,16 @@ def reactProcessor(input):
     functionName = ''.join([word.capitalize() for word in words])
     with open(folder_path+input, 'r') as input:
         soup = BeautifulSoup(input, 'html.parser')
-        # print(soup.body)
-        img_tag = soup.find('img')
+        img_tag = None
+        for img in soup.find_all('img'):
+            # exclude the first a few logo <img> tags with class logo-diff 
+            if 'logo-diff' not in img.get('class', []):
+                img_tag = img
+                break
+            else:
+                continue
+        # img_tag = soup.find('img')
+        # change the format of the first cover page <img> tag
         if img_tag: 
             src = img_tag['src']
             new_src = f"{{img{functionName}}}"
@@ -89,10 +97,25 @@ def reactProcessor(input):
         html_txt = str(soup)
         # First Replace { and } with '&#123;' and '&#125;'
         html_txt = html_txt.replace('{', '&#123;').replace('}', '&#125;')
+
         # Then find the first <img > tag and change the src to the right format of {}
         img_src_pattern = r'<img\s+([^>]*?)src="&#123;([^"]*)&#125;"(?:[^>]*)\s*\/>'
         replacement = r'<img \1src={\2} />'
         replaced_html = re.sub(img_src_pattern, replacement, html_txt)
+        # img_src_pattern = r'<img\s+([^>]*?)src="&#123;([^"]*)&#125;"(?:[^>]*)\s*\/>'
+        # img_matches = re.findall(img_src_pattern, html_txt)
+        # skipped_first_small_logo = False
+        # for match in img_matches:
+        #     attributes, src = match
+        #     if 'class' in attributes and 'small-logo' in attributes.split():
+        #         replacement = r'<img \1src={\2} />'
+        #         replaced_html = re.sub(img_src_pattern, replacement, html_txt)
+        #         if not skipped_first_small_logo:
+        #             skipped_first_small_logo = True
+        #             continue
+        #     replacement = r'<img \1src={\2} />'
+        #     replaced_html = re.sub(img_src_pattern, replacement, html_txt, count=1)
+        #     break
 
         # Replace all <a> tag with <Link>, exclude ones with <a href="#"> as <Link> can't be used to point to sections under same page
         # exclude <a id="downloadData"

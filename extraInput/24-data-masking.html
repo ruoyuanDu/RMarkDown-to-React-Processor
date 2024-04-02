@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta charset="utf-8"/>
+<meta content="quarto-1.4.551" name="generator"/>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<title>Data Masking</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+<script src="24-data-masking_files/libs/clipboard/clipboard.min.js"></script>
+<script src="24-data-masking_files/libs/quarto-html/quarto.js"></script>
+<script src="24-data-masking_files/libs/quarto-html/popper.min.js"></script>
+<script src="24-data-masking_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="24-data-masking_files/libs/quarto-html/anchor.min.js"></script>
+<link href="24-data-masking_files/libs/quarto-html/tippy.css" rel="stylesheet"/>
+<link href="24-data-masking_files/libs/quarto-html/quarto-syntax-highlighting.css" id="quarto-text-highlighting-styles" rel="stylesheet"/>
+<script src="24-data-masking_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="24-data-masking_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet"/>
+<link data-mode="light" href="24-data-masking_files/libs/bootstrap/bootstrap.min.css" id="quarto-bootstrap" rel="stylesheet"/>
+</head>
+<body class="fullcontent">
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<main class="content" id="quarto-document-content">
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+<h1 class="title">Data Masking</h1>
+</div>
+<div class="quarto-title-meta">
+</div>
+</header>
+<section class="level3" id="what-is-data-masking">
+<h3 class="anchored" data-anchor-id="what-is-data-masking">What is data masking?</h3>
+<p><strong>Data masking</strong> is a special feature used in many dplyr functions, such as <a href="../6-arrange"><code>arrange()</code></a>, <a href="../15-count-observations"><code>count()</code></a>, <a href="../3-filter-rows"><code>filter()</code></a>, <a href="../5-2-grouped-dataset"><code>group_by()</code></a>, <a href="../4-mutate-columns"><code>mutate()</code></a>, and <a href="../5-1-summarize"><code>summarise()</code></a> (these functions are marked with <code>&lt;data-masking&gt;</code> in their R documents). Data masking allows you to refer to variables (columns) in a data frame as if they were standalone variables (objects) in an environment, without explicitly using the <code>data$var</code> syntax, thus making data wrangling easier with less typing.</p>
+<p>Consider the following script. It involves multiple typing of <code>starwars2$</code> in order to access the column values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>starwars2 <span class="ot">&lt;-</span> starwars[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a>starwars2[starwars2<span class="sc">$</span>height <span class="sc">&gt;</span> <span class="dv">100</span> <span class="sc">&amp;</span> starwars<span class="sc">$</span>skin_color <span class="sc">==</span> <span class="st">"gold"</span>, ]</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  # A tibble: 1 × 5
+    name  height  mass hair_color skin_color
+    &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;     
+  1 C-3PO    167    75 &lt;NA&gt;       gold</code></pre>
+</div>
+</div>
+<p>Data masking makes the script more succinct and readable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>starwars2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(height <span class="sc">&gt;</span> <span class="dv">100</span> <span class="sc">&amp;</span> skin_color <span class="sc">==</span> <span class="st">"gold"</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+<p>The above example presents two types of “variables”:</p>
+<ul>
+<li><p><strong>Environment-variable</strong> (e.g., <code>starwars</code> and <code>starwars2</code>) are “programming” variables that are stored in an (e.g., global) environment. They are created by importing an external file, by assignment via <code>&lt;-</code>, or exist as R packages’ built-in dataset (as the case here).</p></li>
+<li><p><strong>data-variables</strong> (e.g., <code>height</code> and <code>skin_color</code>) are “statistical” variables that are stored in a dataset. In the above example, using data masking, you can access these variables by directly calling the variable (column) names, the same way you call a variable (object) from an environment.</p></li>
+</ul>
+</section>
+<section class="level3" id="data-masking-in-programming">
+<h3 class="anchored" data-anchor-id="data-masking-in-programming">Data masking in programming</h3>
+<p>While data masking makes it easier to access data variables in routine data wrangling, it requires a bit extra syntax notation when used in programming. There requires two separate syntax for accessing data variables and environment variables.</p>
+<section class="level4" id="access-data-variable-via">
+<h4 class="anchored" data-anchor-id="access-data-variable-via">Access data-variable via <strong><code>{ }</code></strong></h4>
+<p>The following script creates a function to group a dataset based on one variable, and then calculate the mean of a second variable for each group. Here <strong><code>var1</code> and <code>var2</code> are treated as data-variables</strong>. While defining the function, they are accessed in <code>group_by()</code> and <code>summarise()</code> with <strong>doubled curly braces <code>{ var }</code></strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>func_uniqueLevels <span class="ot">&lt;-</span> <span class="cf">function</span>(mydata, var1, var2){</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>  mydata <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    <span class="co"># wrap var1 and var2 in '{{ }}' </span></span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    <span class="fu">group_by</span>({{ var1 }}) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>({{ var2 }}, <span class="at">na.rm =</span> T ))</span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>}</span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a></span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a>starwars2 <span class="sc">%&gt;%</span> </span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>  <span class="co"># calculate height for each type of hair color</span></span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>  <span class="fu">func_uniqueLevels</span>(<span class="at">var1 =</span> hair_color, <span class="at">var2 =</span> height)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  # A tibble: 12 × 2
+    hair_color     mean
+    &lt;chr&gt;         &lt;dbl&gt;
+  1 auburn         150 
+  2 auburn, grey   180 
+  3 auburn, white  182 
+  4 black          174.
+  # ℹ 8 more rows</code></pre>
+</div>
+</div>
+</section>
+<section class="level4" id="access-environment-variable-via-.data">
+<h4 class="anchored" data-anchor-id="access-environment-variable-via-.data">Access environment-variable via <strong><code>.data[[ ]]</code></strong></h4>
+<p>Data masking can be equivalently written with the <strong><code>.data[[ "var" ]]</code></strong> syntax: it includes a fixed <code>.data</code> pronoun (it’s not a dataset), the doubled square brackets, and <strong>quoted</strong> data-variables. For instance, the following two lines are equivalent:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a>starwars2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(height <span class="sc">&gt;</span> <span class="dv">10</span>)</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>starwars2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(.data[[<span class="st">"height"</span>]] <span class="sc">&gt;</span> <span class="dv">10</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+<p>The same syntax can be used when defining a function with access to a environment-variable. For instance, the earlier created function <code>func_uniqueLevels</code> is equivalent to the code below. Here <strong><code>var1</code> and <code>var2</code> are defined as environment-variables</strong> (e.g., <code>var1 = "hair_color"</code>), i.e., <strong>objects available in the <em>local</em> environment of the function</strong> <code>func_uniqueLevels</code> . Therefore, they are accessed in <code>group_by()</code> and <code>summarise()</code> with the <code>.data[[var]]</code> syntax.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a>func_uniqueLevels <span class="ot">&lt;-</span> <span class="cf">function</span>(mydata, var1, var2){</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>  mydata <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>    <span class="co"># wrap var1 and var2 in .data[[...]]</span></span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>    <span class="fu">group_by</span>(.data[[var1]] ) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(.data[[var2]], <span class="at">na.rm =</span> T ))</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a>}</span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a>starwars2 <span class="sc">%&gt;%</span> </span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a>  <span class="co"># Note! the data-variables are specified as quoted strings</span></span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a>  <span class="fu">func_uniqueLevels</span>(<span class="at">var1 =</span> <span class="st">"hair_color"</span>, <span class="at">var2 =</span> <span class="st">"height"</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section class="level3" id="naming-of-columns">
+<h3 class="anchored" data-anchor-id="naming-of-columns">Naming of columns</h3>
+<p>A newly generated column can be named programmatically by using <strong><code>:=</code></strong> instead of <code>=</code>. Similar to discussion above, the naming syntax depends on either the data-variable or environment-variable is being accessed.</p>
+<section class="level4" id="name-after-data-variables-with">
+<h4 class="anchored" data-anchor-id="name-after-data-variables-with">Name after data-variables with <code>{ }</code></h4>
+<p>If the name of a newly created column is derived from data-variables, wrap the column name in double curly brackets <code>{ }</code> and in quote. The function below names the new column as the original column names connected with a hyphen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>func.paste <span class="ot">&lt;-</span> <span class="cf">function</span>(mydata, var1, var2){</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>  mydata <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>    <span class="co"># new column name in double curly brackets</span></span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="st">"{{var1}}-{{var2}}"</span> <span class="sc">:</span><span class="er">=</span> <span class="fu">paste</span>({{var1}}, <span class="st">"-"</span>, {{var2}}),</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>           <span class="at">.before =</span> <span class="dv">2</span>) <span class="co"># new column as the 2nd column</span></span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>}</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a></span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a><span class="co"># Note! The new column is output as the 2nd column</span></span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a>starwars2 <span class="sc">%&gt;%</span> <span class="fu">func.paste</span>(<span class="at">var1 =</span> height, <span class="at">var2 =</span> mass)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  # A tibble: 87 × 6
+    name           `height-mass` height  mass hair_color skin_color 
+    &lt;chr&gt;          &lt;chr&gt;          &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
+  1 Luke Skywalker 172 - 77         172    77 blond      fair       
+  2 C-3PO          167 - 75         167    75 &lt;NA&gt;       gold       
+  3 R2-D2          96 - 32           96    32 &lt;NA&gt;       white, blue
+  4 Darth Vader    202 - 136        202   136 none       white      
+  # ℹ 83 more rows</code></pre>
+</div>
+</div>
+</section>
+<section class="level4" id="name-after-environemnt-variables-using-the-glue-syntax">
+<h4 class="anchored" data-anchor-id="name-after-environemnt-variables-using-the-glue-syntax">Name after environemnt-variables using the glue syntax <code>{ }</code></h4>
+<p>If the new column’s name is derived from an environment variable, you can use the glue syntax (with a <em>single</em> pair of curly brackets <code>{ }</code>). The immediately above example is equivalent to the code below. The new column name is based on <code>var1</code> and <code>var2</code> that are defined variables / objects available in the <em>local</em> function environment.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>func.paste <span class="ot">&lt;-</span> <span class="cf">function</span>(mydata, var1, var2){</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>  mydata <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>    <span class="co"># new column name in SINGLE pair of curly brackets</span></span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="st">"{var1}-{var2}"</span> <span class="sc">:</span><span class="er">=</span> <span class="fu">paste</span>(.data[[var1]], <span class="st">"-"</span>, .data[[var2]])) </span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>}</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a></span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a><span class="co"># column names supplied as quoted strings</span></span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>starwars2 <span class="sc">%&gt;%</span> <span class="fu">func.paste</span>(<span class="at">var1 =</span> <span class="st">"height"</span>, <span class="at">var2 =</span> <span class="st">"mass"</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+</body></html>
