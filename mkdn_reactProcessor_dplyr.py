@@ -130,9 +130,10 @@ def reactProcessor(input):
         replaced_html = re.sub(pattern, replacement, replaced_html)
 
         # change all classname to class
-        final_html = replaced_html.replace('classname', 'class')
+        # adding = to exclude replacing classname and class outside tags
+        final_html = replaced_html.replace('classname=', 'class=')
         # then change all class to className
-        final_html = final_html.replace('class', 'className')
+        final_html = final_html.replace('class=', 'className=')
         
 
         lines = beginning + [final_html] + ending

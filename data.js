@@ -1,42 +1,40 @@
 import React from 'react';
-import Ggplot2WrapLongTexts from '../RVisualization/contents/3-ggplot2-wrap-long-texts_output_react'
-import Ggplot2ReorderViolinPlots from '../RVisualization/contents/5-ggplot2-reorder-violin-plots_output_react'
-import Ggplot2ReorderStackingOfBars from '../RVisualization/contents/7-ggplot2-reorder-stacking-of-bars_output_react'
-import Ggplot2TitleLegendRemoval from '../RVisualization/contents/13-2-ggplot2-title-legend-removal_output_react'
-import Ggplot2RenameTitleLegend from '../RVisualization/contents/13-ggplot2-rename-title-legend_output_react'
-import Ggplot2ReorderLegendKeys from '../RVisualization/contents/8-ggplot2-reorder-legend-keys_output_react'
-import Ggplot2OverlapErrorbar from '../RVisualization/contents/3-ggplot2-overlap-errorbar_output_react'
-import Ggplot2RelocateLegendPosition from '../RVisualization/contents/10-ggplot2-relocate-legend-position_output_react'
-import Ggplot2ChangeLegendRowNumber from '../RVisualization/contents/11-ggplot2-change-legend-row-number_output_react'
-import Ggplot2CreatePoints from '../RVisualization/contents/18-ggplot2-create-points_output_react'
-import Ggplot2ReorderLegendColorbar from '../RVisualization/contents/9-ggplot2-reorder-legend-colorBar_output_react'
-import Ggplot2ReorderMultipleLegends from '../RVisualization/contents/12-ggplot2-reorder-multiple-legends_output_react'
-import Ggplot2ColorBrewerPalette from '../RVisualization/contents/15-ggplot2-color-brewer-palette_output_react'
-import Ggplot2ReorderBars from '../RVisualization/contents/4-ggplot2-reorder-bars_output_react'
-import Ggplot2ColorViridisPalette from '../RVisualization/contents/16-ggplot2-color-viridis-palette_output_react'
-import Ggplot2OvercrowdedDataPoints from '../RVisualization/contents/1-ggplot2-overcrowded-data-points_output_react'
-import Ggplot2ReorderFacetedPanels from '../RVisualization/contents/6-ggplot2-reorder-faceted-panels_output_react'
-import Ggplot2OvercrowdedTextLabels from '../RVisualization/contents/2-ggplot2-overcrowded-text-labels_output_react'
-import Ggplot2LegendRemove from '../RVisualization/contents/14-ggplot2-legend-remove_output_react'
-import Ggplot2PolarCoordSummary from '../RVisualization/contents/17-ggplot2-polar-coord-summary_output_react'
-const data=[{'component': '<Ggplot2WrapLongTexts />', 'path': '3-ggplot2-wrap-long-texts', 'title': '3 ggplot2 wrap long texts'},
-{'component': '<Ggplot2ReorderViolinPlots />', 'path': '5-ggplot2-reorder-violin-plots', 'title': '5 ggplot2 reorder violin plots'},
-{'component': '<Ggplot2ReorderStackingOfBars />', 'path': '7-ggplot2-reorder-stacking-of-bars', 'title': '7 ggplot2 reorder stacking of bars'},
-{'component': '<Ggplot2TitleLegendRemoval />', 'path': '13-2-ggplot2-title-legend-removal', 'title': '13 2 ggplot2 title legend removal'},
-{'component': '<Ggplot2RenameTitleLegend />', 'path': '13-ggplot2-rename-title-legend', 'title': '13 ggplot2 rename title legend'},
-{'component': '<Ggplot2ReorderLegendKeys />', 'path': '8-ggplot2-reorder-legend-keys', 'title': '8 ggplot2 reorder legend keys'},
-{'component': '<Ggplot2OverlapErrorbar />', 'path': '3-ggplot2-overlap-errorbar', 'title': '3 ggplot2 overlap errorbar'},
-{'component': '<Ggplot2RelocateLegendPosition />', 'path': '10-ggplot2-relocate-legend-position', 'title': '10 ggplot2 relocate legend position'},
-{'component': '<Ggplot2ChangeLegendRowNumber />', 'path': '11-ggplot2-change-legend-row-number', 'title': '11 ggplot2 change legend row number'},
-{'component': '<Ggplot2CreatePoints />', 'path': '18-ggplot2-create-points', 'title': '18 ggplot2 create points'},
-{'component': '<Ggplot2ReorderLegendColorbar />', 'path': '9-ggplot2-reorder-legend-colorBar', 'title': '9 ggplot2 reorder legend colorBar'},
-{'component': '<Ggplot2ReorderMultipleLegends />', 'path': '12-ggplot2-reorder-multiple-legends', 'title': '12 ggplot2 reorder multiple legends'},
-{'component': '<Ggplot2ColorBrewerPalette />', 'path': '15-ggplot2-color-brewer-palette', 'title': '15 ggplot2 color brewer palette'},
-{'component': '<Ggplot2ReorderBars />', 'path': '4-ggplot2-reorder-bars', 'title': '4 ggplot2 reorder bars'},
-{'component': '<Ggplot2ColorViridisPalette />', 'path': '16-ggplot2-color-viridis-palette', 'title': '16 ggplot2 color viridis palette'},
-{'component': '<Ggplot2OvercrowdedDataPoints />', 'path': '1-ggplot2-overcrowded-data-points', 'title': '1 ggplot2 overcrowded data points'},
-{'component': '<Ggplot2ReorderFacetedPanels />', 'path': '6-ggplot2-reorder-faceted-panels', 'title': '6 ggplot2 reorder faceted panels'},
-{'component': '<Ggplot2OvercrowdedTextLabels />', 'path': '2-ggplot2-overcrowded-text-labels', 'title': '2 ggplot2 overcrowded text labels'},
-{'component': '<Ggplot2LegendRemove />', 'path': '14-ggplot2-legend-remove', 'title': '14 ggplot2 legend remove'},
-{'component': '<Ggplot2PolarCoordSummary />', 'path': '17-ggplot2-polar-coord-summary', 'title': '17 ggplot2 polar coord summary'},
+import StrReplace from '../RDataWrangling/stringr/contents/13-str-replace_output_react'
+import StrDup from '../RDataWrangling/stringr/contents/3-str-dup_output_react'
+import StrExtract from '../RDataWrangling/stringr/contents/12-str-extract_output_react'
+import StrPad from '../RDataWrangling/stringr/contents/7-str-pad_output_react'
+import StrLength from '../RDataWrangling/stringr/contents/1-str-length_output_react'
+import StrCount from '../RDataWrangling/stringr/contents/2-str-count_output_react'
+import StrSortStrOrder from '../RDataWrangling/stringr/contents/11-str-sort-str-order_output_react'
+import StrFlatten from '../RDataWrangling/stringr/contents/15-str-flatten_output_react'
+import StrWrap from '../RDataWrangling/stringr/contents/18-str-wrap_output_react'
+import StrSub from '../RDataWrangling/stringr/contents/4-str-sub_output_react'
+import StrTo from '../RDataWrangling/stringr/contents/10-str-to_output_react'
+import Introduction from '../RDataWrangling/stringr/contents/0-introduction_output_react'
+import StrTrunc from '../RDataWrangling/stringr/contents/8-str-trunc_output_react'
+import StrSplit from '../RDataWrangling/stringr/contents/16-str-split_output_react'
+import StrSubset from '../RDataWrangling/stringr/contents/6-str-subset_output_react'
+import StrRemove from '../RDataWrangling/stringr/contents/14-str-remove_output_react'
+import StrDetect from '../RDataWrangling/stringr/contents/5-str-detect_output_react'
+import StrC from '../RDataWrangling/stringr/contents/17-str-c_output_react'
+import StrTrim from '../RDataWrangling/stringr/contents/9-str-trim_output_react'
+const data=[{'component': '<StrReplace />', 'path': '13-str-replace', 'title': '13 str replace'},
+{'component': '<StrDup />', 'path': '3-str-dup', 'title': '3 str dup'},
+{'component': '<StrExtract />', 'path': '12-str-extract', 'title': '12 str extract'},
+{'component': '<StrPad />', 'path': '7-str-pad', 'title': '7 str pad'},
+{'component': '<StrLength />', 'path': '1-str-length', 'title': '1 str length'},
+{'component': '<StrCount />', 'path': '2-str-count', 'title': '2 str count'},
+{'component': '<StrSortStrOrder />', 'path': '11-str-sort-str-order', 'title': '11 str sort str order'},
+{'component': '<StrFlatten />', 'path': '15-str-flatten', 'title': '15 str flatten'},
+{'component': '<StrWrap />', 'path': '18-str-wrap', 'title': '18 str wrap'},
+{'component': '<StrSub />', 'path': '4-str-sub', 'title': '4 str sub'},
+{'component': '<StrTo />', 'path': '10-str-to', 'title': '10 str to'},
+{'component': '<Introduction />', 'path': '0-introduction', 'title': '0 introduction'},
+{'component': '<StrTrunc />', 'path': '8-str-trunc', 'title': '8 str trunc'},
+{'component': '<StrSplit />', 'path': '16-str-split', 'title': '16 str split'},
+{'component': '<StrSubset />', 'path': '6-str-subset', 'title': '6 str subset'},
+{'component': '<StrRemove />', 'path': '14-str-remove', 'title': '14 str remove'},
+{'component': '<StrDetect />', 'path': '5-str-detect', 'title': '5 str detect'},
+{'component': '<StrC />', 'path': '17-str-c', 'title': '17 str c'},
+{'component': '<StrTrim />', 'path': '9-str-trim', 'title': '9 str trim'},
 ]
