@@ -68,11 +68,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <main class="content" id="quarto-document-content">
 <header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
-<h1 class="title">Connect functions with pipe operator <strong><code>%&gt;%</code></strong></h1>
+<div class="small-logo"><img class="logo-diff img-fluid cover-img" src="../dplyr_graphics/logo_R_dplyr.png"/></div><h1 class="title">Connect functions with pipe operator <strong><code>%&gt;%</code></strong></h1>
 </div>
 <div class="quarto-title-meta">
 </div>
 </header>
+<p></p>
 <p>The pipe operator <strong><code>%&gt;%</code></strong> originates from the <code>magrittr</code> package, and is also included in the <code>dplyr</code> package. You can use the pipe operator whenever <code>dplyr</code> or <code>tidyverse</code> is loaded. You can quickly type the pipe operator by the built-in keyboard shortcut <strong>Ctrl / Cmd</strong> + <strong>Shift</strong> + <strong>M</strong>.</p>
 <p>The pipe operator takes the output of the expression on its left and passes it as the <strong>first argument</strong> to the function on its right. That is, <code>x %&gt;% f(y)</code> (<code>f()</code> for function) is equivalent to <code>f(x, y)</code>. To get a better understanding, consider the following script, which calculates the mean of a vector.</p>
 <div class="cell">

@@ -96,6 +96,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p><img src="../dplyr_graphics/logo_R_dplyr.png" class="logo-diff img-fluid"></p>
 <p>This tutorial explains how to select columns using the <code>select()</code> function. In addition, a range of related techniques will be demonstrated, which are helpful not only for <code>select()</code>, but also for many other functions of dplyr.</p>
 <p>This tutorial covers the following four topics:</p>
 <ul>
@@ -126,7 +127,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="basics" class="level3">
 <h3 class="anchored" data-anchor-id="basics">Basics of column selection</h3>
-<p>Select columns with <strong><code>select()</code></strong>. Note that the column names are not quoted; you access the column name as if you are calling the name of an object or variable (a technique known as <a href="../24-data-masking">data masking</a> that makes typing easier for routine tasks).</p>
+<p>Select columns with <strong><code>select()</code></strong>. Note that the column names are not quoted; you access the column name as if you are calling the name of an object or variable (a technique known as <a href="../25-data-masking">data masking</a> that makes typing easier for routine tasks).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>starwars2 <span class="sc">%&gt;%</span> <span class="fu">select</span>(name, height, skin_color)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -215,7 +216,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   # ℹ 83 more rows</code></pre>
 </div>
 </div>
-<p>Use <strong><code>matches()</code></strong> to match column names using <a href="https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference">regular expression</a>. In the following example, we use <a href="https://learn.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in-regular-expressions">character class</a> to specify the search pattern.</p>
+<p>Use <strong><code>matches()</code></strong> to match column names using <a href="R/data-wrangling/regular-expression/0-introduction">regular expression</a>. In the following example, we use <a href="R/data-wrangling/regular-expression/1-character-class">character class</a> to specify the search pattern.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># select all columns with names containing the letter "n" or "m". </span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>starwars2 <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">matches</span>(<span class="st">"[nm]"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -394,7 +395,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   # ℹ 83 more rows</code></pre>
 </div>
 </div>
-<p>In addition to the selection helpers mentioned above, <a href="../13-repeated-operations-on-multiple-column"><code>across()</code></a> is another powerful helper function that enables repeated operations across multiple columns, and is frequently used together with <a href="../4-mutate-columns"><code>mutate()</code></a> and <a href="../5-1-summarize"><code>summarize()</code></a>. We’ll introduce this more advanced technique in a later section.</p>
+<p>In addition to the selection helpers mentioned above, <a href="../14-repeated-operations-on-multiple-column"><code>across()</code></a> is another powerful helper function that enables repeated operations across multiple columns, and is frequently used together with <a href="../4-mutate-columns"><code>mutate()</code></a> and <a href="../5-summarize"><code>summarize()</code></a>. We’ll introduce this more advanced technique in a later section.</p>
 </section>
 
 </main>

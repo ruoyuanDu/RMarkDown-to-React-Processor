@@ -3,7 +3,7 @@ import argparse
 from bs4 import BeautifulSoup
 import re
 
-def extraProcessor(file, logoPath):
+def extraProcessor(file):
     folder_path = './initialInput_for_extra/'
     output_path = './extraInput/'
     
@@ -12,7 +12,8 @@ def extraProcessor(file, logoPath):
         first_h1 = soup.find('h1', class_='title')
         new_div = soup.new_tag('div')
         new_div['class'] = 'small-logo'
-        logo_img = first_h1.find('img', class_='logo-diff')
+        # logo_img = first_h1.find('img', class_='logo-diff')
+        logo_img = soup.find('img', class_='logo-diff')
         if logo_img:    
             if 'class' in logo_img.attrs:
                 logo_img['class'].append('cover-img')
@@ -27,10 +28,11 @@ def extraProcessor(file, logoPath):
 
 
 def main():
-    files = os.listdir('initialInput_for_extra')
-    logo_path = '../dplyr_graphics/logo_dplyr.png'
+    folder_path = './initialInput_for_extra'
+    files = os.listdir(folder_path)
     for file in files:
-        extraProcessor(file, logo_path)
+        if os.path.isfile(os.path.join(folder_path, file)):
+            extraProcessor(file)
 
 if __name__ == "__main__":
     main()

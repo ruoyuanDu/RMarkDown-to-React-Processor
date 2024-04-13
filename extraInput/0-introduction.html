@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="quarto-1.4.551" name="generator"/>
 <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
-<title>Data Wrangling with dplyr </title>
+<title>Data Wrangling with dplyr</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,11 +34,12 @@ ul.task-list li input[type="checkbox"] {
 <main class="content" id="quarto-document-content">
 <header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
-<div class="small-logo"><img class="img-fluid logo-diff cover-img" src="dplyr_graphics/logo_dplyr.png" style="width:10.0%"/></div><h1 class="title">Data Wrangling with <strong>dplyr</strong> </h1>
+<div class="small-logo"><img class="logo-diff img-fluid cover-img" src="../dplyr_graphics/logo_R_dplyr.png"/></div><h1 class="title">Data Wrangling with <strong>dplyr</strong></h1>
 </div>
 <div class="quarto-title-meta">
 </div>
 </header>
+<p></p>
 <p>Data wrangling is one of the most important steps in data science. In R, a wide range of such tasks can be readily accomplished using the core package <strong>dplyr</strong>. From this tutorial, you’ll truly master the power of this package:</p>
 <p>First, you’ll learn the important <strong>pipe operator <a href="../1-pipe-operator"><code>%&gt;%</code></a></strong>, which allows you to streamline functions in a highly efficient manner. Majority of functions in this tutorial will be written in a piped style.</p>
 <p>Then, you’ll study the <strong>six most commonly used functions</strong>. A diverse combination of these six functions allows you to perform a good majority of data wrangling tasks.</p>
@@ -46,17 +47,17 @@ ul.task-list li input[type="checkbox"] {
 <li>Select columns with <a href="../2-select-columns"><code>select()</code></a>. You’ll also learn many related techniques, including selection helper functions and the <strong>purrr</strong> style. These techniques are highly helpful for <code>select()</code> and many other dplyr functions.</li>
 <li>Filter rows with <a href="../3-filter-rows"><code>filter()</code></a>.</li>
 <li>Modify or create new columns with <a href="../4-mutate-columns"><code>mutate()</code></a>.</li>
-<li>Create summarizing statistics with <a href="../5-1-summarize"><code>summarize()</code></a>.</li>
-<li>Divide dataset into groups with <a href="../5-2-grouped-dataset"><code>group_by()</code></a>.</li>
-<li>Arrange rows with <a href="../6-arrange"><code>arrange()</code></a>.</li>
+<li>Create summarizing statistics with <a href="../5-summarize"><code>summarize()</code></a>.</li>
+<li>Divide dataset into groups with <a href="../6-grouped-dataset"><code>group_by()</code></a>.</li>
+<li>Arrange rows with <a href="../7-arrange"><code>arrange()</code></a>.</li>
 </ul>
 <p>Next, you’ll master more functions divided into the following sections. These functions further empower you to address complicated tasks with great efficiency and flexibility.</p>
 <ul>
-<li><p><strong>Functions that operate on rows</strong>. You’ll learn <a href="../7-keep-distinct-rows"><code>distinct()</code></a> to select unique non-duplicated rows, and the <a href="../8-select-rows"><code>slice_*()</code></a> family functions to select rows (complementary to <code>filter()</code>).</p></li>
-<li><p><strong>Functions that operate on columns</strong>. You’ll learn <a href="../9-glimpse-columns"><code>glimpse()</code></a> to quickly glance at the dataset structure and content, <a href="../10-extract-a-single-column"><code>pull()</code></a> to extract values from a single column, <a href="../11-rename-columns"><code>rename()</code> and <code>rename_with()</code></a> to rename column header names, and <a href="../12-reorder-columns"><code>relocate()</code></a> to change column order.</p></li>
-<li><p><strong>Column-wise and row-wise repeated operations.</strong> You’ll use <a href="../13-repeated-operations-on-multiple-column"><code>across()</code></a> to perform repeated operations across multiple columns, and <a href="../14-rowwise-operations"><code>rowwise()</code> and <code>c_across()</code></a> to apply repeated operations across multiple rows.</p></li>
-<li><p><strong>Functions for paired datasets</strong> This section covers a wide variety of techniques to merge (or subtract) two datasets, including <a href="../16-mutating-join-two-datasets">mutating join</a> (<code>inner_join()</code>, <code>left_join()</code>, <code>right_join()</code>, and <code>full_join()</code>), <a href="../17-filtering-join-two-datasets">filtering join</a> (<code>semi_join()</code> and <code>anti_join()</code>), <a href="../18-nest-join-two-datasets"><code>nest_join()</code></a>, and <a href="../19-cross-join-two-datasets"><code>cross_join()</code></a>. In addition, you’ll learn how to <a href="../20-bind-two-datasets-by-columns-rows">bind two or multiple datasets</a> by columns or rows with <code>bind_cols()</code> and <code>bind_rows()</code>, and perform a variety of row-based <a href="../21-set-operations">set operations</a>.</p></li>
-<li><p>In the end, you’ll learn the advanced feature of <a href="../24-data-masking"><strong>data masking</strong></a> to effectively incorporate these dplyr tools into your self-defined functions.</p></li>
+<li><p><strong>Functions that operate on rows</strong>. You’ll learn <a href="../8-keep-distinct-rows"><code>distinct()</code></a> to select unique non-duplicated rows, and the <a href="../9-select-rows"><code>slice_*()</code></a> family functions to select rows (complementary to <code>filter()</code>).</p></li>
+<li><p><strong>Functions that operate on columns</strong>. You’ll learn <a href="../10-glimpse-columns"><code>glimpse()</code></a> to quickly glance at the dataset structure and content, <a href="../11-extract-a-single-column"><code>pull()</code></a> to extract values from a single column, <a href="../12-rename-columns"><code>rename()</code> and <code>rename_with()</code></a> to rename column header names, and <a href="../13-reorder-columns"><code>relocate()</code></a> to change column order.</p></li>
+<li><p><strong>Column-wise and row-wise repeated operations.</strong> You’ll use <a href="../14-repeated-operations-on-multiple-column"><code>across()</code></a> to perform repeated operations across multiple columns, and <a href="../15-rowwise-operations"><code>rowwise()</code> and <code>c_across()</code></a> to apply repeated operations across multiple rows.</p></li>
+<li><p><strong>Functions for paired datasets</strong> This section covers a wide variety of techniques to merge (or subtract) two datasets, including <a href="../17-mutating-join-two-datasets">mutating join</a> (<code>inner_join()</code>, <code>left_join()</code>, <code>right_join()</code>, and <code>full_join()</code>), <a href="../18-filtering-join-two-datasets">filtering join</a> (<code>semi_join()</code> and <code>anti_join()</code>), <a href="../19-nest-join-two-datasets"><code>nest_join()</code></a>, and <a href="../20-cross-join-two-datasets"><code>cross_join()</code></a>. In addition, you’ll learn how to <a href="../21-bind-two-datasets-by-columns-rows">bind two or multiple datasets</a> by columns or rows with <code>bind_cols()</code> and <code>bind_rows()</code>, and perform a variety of row-based <a href="../22-set-operations">set operations</a>.</p></li>
+<li><p>In the end, you’ll learn the advanced feature of <a href="../25-data-masking"><strong>data masking</strong></a> to effectively incorporate these dplyr tools into your self-defined functions.</p></li>
 </ul>
 </main>
 <!-- /main column -->

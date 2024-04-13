@@ -68,11 +68,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <main class="content" id="quarto-document-content">
 <header class="quarto-title-block default" id="title-block-header">
 <div class="quarto-title">
-<h1 class="title">Mutate Columns of a Dataset</h1>
+<div class="small-logo"><img class="logo-diff img-fluid cover-img" src="../dplyr_graphics/logo_R_dplyr.png"/></div><h1 class="title">Mutate Columns of a Dataset</h1>
 </div>
 <div class="quarto-title-meta">
 </div>
 </header>
+<p></p>
 <p>Use <strong><code>mutate()</code></strong> to create new columns as a function of existing columns, or modify (overwrite) existing columns. The functions inside <code>mutate()</code> operate on selected columns, and independently for each row of the dataset.</p>
 <section class="level3" id="basics-of-column-mutation">
 <h3 class="anchored" data-anchor-id="basics-of-column-mutation">Basics of column mutation</h3>
@@ -163,7 +164,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section class="level3" id="retain-selected-columns-in-the-output-dataset">
 <h3 class="anchored" data-anchor-id="retain-selected-columns-in-the-output-dataset">Retain selected columns in the output dataset</h3>
-<p>By default, <em>all</em> original and newly generated columns are kept in the output. Alternatively, use <strong><code>.keep</code></strong> argument (defaults to <strong><code>"all"</code></strong>) to selectively reserve desired columns in the output. <strong>Newly generated variables and the <a href="../5-2-grouped-dataset">grouping variables</a> are always kept in the output.</strong></p>
+<p>By default, <em>all</em> original and newly generated columns are kept in the output. Alternatively, use <strong><code>.keep</code></strong> argument (defaults to <strong><code>"all"</code></strong>) to selectively reserve desired columns in the output. <strong>Newly generated variables and the <a href="../6-grouped-dataset">grouping variables</a> are always kept in the output.</strong></p>
 <ul>
 <li><strong><code>"used"</code></strong>: retain only columns used to create new columns.</li>
 </ul>
