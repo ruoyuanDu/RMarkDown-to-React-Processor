@@ -52,7 +52,7 @@ def reactProcessor(input):
                 beginning = importing + [
                     "import React from 'react'; \n",
                     "import {Link} from 'react-router-dom'; \n",
-                    # for dplyr
+                    # for tibble
                     "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
                     # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
                     "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
@@ -68,7 +68,7 @@ def reactProcessor(input):
                 beginning = importing + [
                     "import React from 'react'; \n",
                     "import {Link} from 'react-router-dom'; \n",
-                    # for dplyr
+                    # for tibble
                     "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
                     "import img"+functionName+" from '../" + src + "';\n\n", 
                     # capitalize the first letter of the filename for the function component
@@ -82,7 +82,7 @@ def reactProcessor(input):
                 beginning = importing + [
                     "import React from 'react'; \n",
                     "import {Link} from 'react-router-dom'; \n",
-                    # for dplyr
+                    # for tibble
                     "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
                     # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
                     "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n\n",
@@ -97,7 +97,7 @@ def reactProcessor(input):
                 beginning = importing + [
                     "import React from 'react'; \n",
                     "import {Link} from 'react-router-dom'; \n",
-                    # for dplyr
+                    # for tibble
                     "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
                     # capitalize the first letter of the filename for the function component
                     # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
@@ -167,8 +167,8 @@ def main():
                         {'component': '<'+functionName+' />', 'path':filename.split('_')[0], 'title':' '.join(filename.split('_')[0].split('-'))}
                     )
                     # parent folder name of contents
-                    ## for dplyr
-                    parentFolder = "dplyr"
+                    ## for tibble
+                    parentFolder = "tibble"
                     importList.append("import "+functionName+" from" + " '../RDataWrangling/" + parentFolder+"/contents/"+ filename+"_react'")
             # json_data = json.dumps(dataList, indent=2)
             file_path = "data.js"

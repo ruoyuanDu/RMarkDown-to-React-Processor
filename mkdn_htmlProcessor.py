@@ -21,10 +21,10 @@ def processor(input_file):
                 if tag.has_attr('style'):
                     del tag['style']
 
-            # change <h1> tag to <h3> tag
-            h1_tags = soup.find_all('h1', {'class':'title'})
-            for h1 in h1_tags:
-                h1.name = 'h3'
+            # # change <h1> tag to <h3> tag
+            # h1_tags = soup.find_all('h1', {'class':'title'})
+            # for h1 in h1_tags:
+            #     h1.name = 'h3'
 
             # remove R default copy button
             buttons_to_remove = soup.find_all('button', {'class': 'code-copy-button', 'title': 'Copy to Clipboard'})
