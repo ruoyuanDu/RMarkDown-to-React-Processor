@@ -24,7 +24,7 @@ def reactProcessor(input):
             elif 'logo-diff' in img.get('class', []):
                 logo_imgs.append(img)
             
-        # img_tag = soup.find('img') 
+        # img_tag = soup.find('img')
         # change the format of the first cover page <img> tag
         importing = []
         if logo_imgs:           
@@ -46,12 +46,14 @@ def reactProcessor(input):
             img_tag['class'] = 'cover-img'
    
         # exclude case where img_tag is not found, so does src
+        # importing list for case when there is image 
         if img_tag:
-            # if soup.find('li', id='stepwise-instructions'):
+            # importing list when there is tablist
             if soup.find('ul', attrs={'role': 'tablist'}):            
                 beginning = importing + [
                     "import React from 'react'; \n",
                     "import {Link} from 'react-router-dom'; \n",
+                    # for blog
                     "import {useRCustomEffect} from '../../useCustomEffect'; \n",
                     # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
                     "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
@@ -63,10 +65,12 @@ def reactProcessor(input):
                     "AddTabsetQuarto()\n",
                     "return ( <div>\n"  
                 ]
+            # importing list when there is no tablist
             else:
                 beginning = importing + [
                     "import React from 'react'; \n",
                     "import {Link} from 'react-router-dom'; \n",
+                    # for blog
                     "import {useRCustomEffect} from '../../useCustomEffect'; \n",
                     "import img"+functionName+" from '../" + src + "';\n\n", 
                     # capitalize the first letter of the filename for the function component
@@ -75,11 +79,13 @@ def reactProcessor(input):
                     "useRCustomEffect()\n",            
                     "return ( <div>\n"  
                 ]
+        # importing list when there is no image
         else:
             if soup.find('ul', attrs={'role': 'tablist'}):
                 beginning = importing + [
                     "import React from 'react'; \n",
                     "import {Link} from 'react-router-dom'; \n",
+                    # for blog
                     "import {useRCustomEffect} from '../../useCustomEffect'; \n",
                     # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
                     "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n\n",
@@ -94,6 +100,7 @@ def reactProcessor(input):
                 beginning = importing + [
                     "import React from 'react'; \n",
                     "import {Link} from 'react-router-dom'; \n",
+                    # for blog
                     "import {useRCustomEffect} from '../../useCustomEffect'; \n",
                     # capitalize the first letter of the filename for the function component
                     # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
@@ -121,7 +128,6 @@ def reactProcessor(input):
         # exclude <a id="downloadData"
         # pattern = r'<a\s+href="([^#].*?)">(.*?)<\/a>'
         # pattern = r'<a\s+href="(?!.*?id="downloadData")(.*?)">(.*?)<\/a>'
-        # pattern = r'<a\s+href="(?!.*?id="downloadData")(?!.*?#)(.*?)">(.*?)<\/a>' # this pattern can't handle where <a> tags' href with and without # appearing in the same paragraph, liek this: string1 = '<p><img className="cover-img" src={imgGgplot2MapAirlineAnimation} /></p><p>In this <a href="/R/gallery/ggplot2-map-airline"><strong>earlier article</strong></a>, we visualized the global flights and airports as a static graphic. This current work tweaks the static graphic into an animation to make the visualization much more dynamic and engaging. <span id="highlightBackground">The early part of data wrangling is identical to the static graphic. If you’re already familiar with the data cleanup, you can <a href="#skip"><strong>skip</strong></a> directly to the edits designed for animation.</span> 🌻</p>'
         pattern = r'<a\s+href="(?!.*?id="downloadData")(?!#)([^"]*)">(.*?)<\/a>'
         replacement = r'<Link to="\1">\2</Link>'
         replaced_html = re.sub(pattern, replacement, replaced_html)
@@ -132,13 +138,14 @@ def reactProcessor(input):
         # then change all class to className
         final_html = final_html.replace('class=', 'className=')
         
-        
 
         lines = beginning + [final_html] + ending
         # lines = beginning + htmlLines + ending
         text = ''.join(lines)
     with open('./outputReact/'+inputName+'_react.js', 'w') as output:
         output.write(text)
+    # return the first image src
+    return src
         
 def main():
     parser = argparse.ArgumentParser(description="Process an HTML file.")
@@ -146,7 +153,7 @@ def main():
     parser.add_argument("--input_file", default='', help="Input HTML file")
     args = parser.parse_args()
     if args.input_file:
-        reactProcessor(args.input_file)
+        src = reactProcessor(args.input_file)
     else:
         if args.input_folder_path:
             importList = []
@@ -155,17 +162,21 @@ def main():
             for filename in files:
                 if os.path.isfile(os.path.join(args.input_folder_path, filename)):
                     print(filename)
-                    reactProcessor(filename)
+                    src = reactProcessor(filename)
                     words = filename.split('_')[0].split('-')
                     # remove numbers from the function name if any
                     words = [word for word in words if not word.isdigit()]
                     # Capitalize the first letter of each word and join them without hyphens
                     functionName = ''.join([word.capitalize() for word in words])
                     dataList.append(
-                        {'component': '<'+functionName+' />', 'path':filename.split('_')[0], 'title':' '.join(filename.split('_')[0].split('-'))}
+                        {'component': '<'+functionName+' />', 'path':filename.split('_')[0], 'title':' '.join(filename.split('_')[0].split('-')),'subTitle':'Subtitle', 'dscrpt': 'This is description', 'image': 'img'+functionName, 'time':'2 min'}
                     )
-                    # for gallery
-                    importList.append("import "+functionName+" from" + " '../RgalleryPages" + "/contents/"+ filename+"_react'")
+                    # parent folder name of contents
+                    ## for blog
+                    # parentFolder = "blog"
+                    importList.append("import "+functionName+" from" + " '../blog" +"/contents/"+ filename+"_react'")
+                    importList.append("import " + "img" + functionName + " from" + " '../blog/" + src + "';")
+           
             # json_data = json.dumps(dataList, indent=2)
             file_path = "data.js"
 
@@ -180,23 +191,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # folder_path = './output'
-    # dataList = []
-    # files = os.listdir(folder_path)
-    # for filename in files:
-    #     if os.path.isfile(os.path.join(folder_path, filename)):
-    #         print(filename)
-    #         reactProcessor(filename)
-    #         dataList.append(
-    #             {'component': "<Spark"+filename.split('_')[0].capitalize()+" />", 'path':'', 'title':filename.split('_')[0]}
-    #         )
-    # json_data = json.dumps(dataList, indent=2)
-    # file_path = "data.js"
-    
-
-    # with open(file_path, 'w') as json_file:
-    #     json_file.write('const data=[')
-    #     for item in dataList:
-    #         json_file.write(str(item)+',' + '\n')
-    #     json_file.write(']')
     main()

@@ -18,6 +18,8 @@ or
     In terminal run: python3 mkdn_reactProcessor_tibble.py --input_folder_path './output'
 or 
     In terminal run: python3 mkdn_reactProcessor_purrr.py --input_folder_path './output'
+or 
+    In terminal run: python3 mkdn_reactProcessor_blog.py --input_folder_path './output'
 
     this will take files from the output folder and create new react.js files in the outputReact folder.  
     To process a single file in the input folder, use reactProcessor.py input_fiel <file_name(no path needed as long as it's in the output folder)>. The file should be in the output folder too.
