@@ -1,19 +1,21 @@
 import re
-pattern = r'<a\s+href="(?!.*?id="downloadData")(?!.*?#)(.*?)">(.*?)<\/a>'
-pattern = r'<a\s+href="(?!.*?id="downloadData")(?!#)([^"]*)">(.*?)<\/a>'
-# pattern = r'<a\s+href="((?!#)[^"]+)">(.*?)<\/a>'
-
-
-
-
-
-replacement = r'<Link to="\1">\2</Link>'
-
-string = '<a href="/R/gallery/ggplot2-map-airline"><strong>earlier article</strong></a>' 
-string1 = '<p><img className="cover-img" src={imgGgplot2MapAirlineAnimation} /></p><p>In this <a href="/R/gallery/ggplot2-map-airline"><strong>earlier article</strong></a>, we visualized the global flights and airports as a static graphic. This current work tweaks the static graphic into an animation to make the visualization much more dynamic and engaging. <span id="highlightBackground">The early part of data wrangling is identical to the static graphic. If you’re already familiar with the data cleanup, you can <a href="#skip"><strong>skip</strong></a> directly to the edits designed for animation.</span> 🌻</p>'
-string2 = '''
-<p><span id="highlightBackground" style="color:#009999;background-color:#fffac7;">The data wrangling above is identical to the creation of the <a href="../ggplot2-map-airline">static graphic</a>. <span id="skip"><strong>Edits 1-6 below the line are particularly catered for animation.</strong><a href="https//'www.aws.com" id=downloadData><strong>skip</strong></a></span></span></p>
+html_txt = '''
+<figure className="figure">
+<p><img className="img-fluid quarto-figure quarto-figure-center figure-img" src="graphics/heatmap_vaccine_function_completed_polio.png"/></p>
+</figure>
 '''
+pattern = re.compile(
+    r'<figure className="figure">\s*<p>\s*<img className="(img-fluid quarto-figure quarto-figure-center figure-img)" src="([^"]+).png"\s*/>\s*</p>\s*</figure>',
+    re.DOTALL
+)
 
-replaced_html = re.sub(pattern, replacement, string1)
+replacement = (
+    r'<figure className="figure">\n'
+    r'  <picture>\n'
+    r'    <source type="image/webp" srcset="https://s3.amazonaws.com/databrewer/media/\2.webp" />\n'
+    r'    <img className="\1" src="\2"/>\n'
+    r'  </picture>\n'
+    r'</figure>'
+)
+replaced_html = re.sub(pattern, replacement, html_txt)
 print(replaced_html)

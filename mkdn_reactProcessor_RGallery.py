@@ -46,61 +46,33 @@ def reactProcessor(input):
             img_tag['class'] = 'cover-img'
    
         # exclude case where img_tag is not found, so does src
-        if img_tag:
-            # if soup.find('li', id='stepwise-instructions'):
-            if soup.find('ul', attrs={'role': 'tablist'}):            
-                beginning = importing + [
-                    "import React from 'react'; \n",
-                    "import {Link} from 'react-router-dom'; \n",
-                    "import {useRCustomEffect} from '../../useCustomEffect'; \n",
-                    # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
-                    "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
-                    "import img"+functionName+" from '../" + src + "'; \n", 
-                    # capitalize the first letter of the filename for the function component
-                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
-                    "export default function " + functionName + "(){\n",
-                    "useRCustomEffect()\n",
-                    "AddTabsetQuarto()\n",
-                    "return ( <div>\n"  
-                ]
-            else:
-                beginning = importing + [
-                    "import React from 'react'; \n",
-                    "import {Link} from 'react-router-dom'; \n",
-                    "import {useRCustomEffect} from '../../useCustomEffect'; \n",
-                    "import img"+functionName+" from '../" + src + "';\n\n", 
-                    # capitalize the first letter of the filename for the function component
-                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
-                    "export default function " + functionName + "(){\n",
-                    "useRCustomEffect()\n",            
-                    "return ( <div>\n"  
-                ]
+        if img_tag:  
+            beginning = importing + [
+                "import React from 'react'; \n",
+                "import {Link} from 'react-router-dom'; \n",
+                # "import {useRCustomEffect} from '../../useCustomEffect'; \n",
+                # "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
+                "import img"+functionName+" from '../" + src + "'; \n", 
+                # capitalize the first letter of the filename for the function component
+                # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
+                "export default function " + functionName + "(){\n",
+                # "useRCustomEffect()\n",
+                # "AddTabsetQuarto()\n",
+                "return ( <div>\n"  
+            ]
         else:
-            if soup.find('ul', attrs={'role': 'tablist'}):
-                beginning = importing + [
-                    "import React from 'react'; \n",
-                    "import {Link} from 'react-router-dom'; \n",
-                    "import {useRCustomEffect} from '../../useCustomEffect'; \n",
-                    # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
-                    "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n\n",
-                    # capitalize the first letter of the filename for the function component
-                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
-                    "export default function " + functionName + "(){\n",
-                    "useRCustomEffect()\n",
-                    "AddTabsetQuarto()\n",
-                    "return ( <div>\n"  
-                ]
-            else:
-                beginning = importing + [
-                    "import React from 'react'; \n",
-                    "import {Link} from 'react-router-dom'; \n",
-                    "import {useRCustomEffect} from '../../useCustomEffect'; \n",
-                    # capitalize the first letter of the filename for the function component
-                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
-                    "export default function " + functionName + "(){\n",
-                    "useRCustomEffect()\n",            
-                    "return ( <div>\n"  
-                ]
+            beginning = importing + [
+                "import React from 'react'; \n",
+                "import {Link} from 'react-router-dom'; \n",
+                # "import {useRCustomEffect} from '../../useCustomEffect'; \n",
+                # "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n\n",
+                # capitalize the first letter of the filename for the function component
+                # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
+                "export default function " + functionName + "(){\n",
+                # "useRCustomEffect()\n",
+                # "AddTabsetQuarto()\n",
+                "return ( <div>\n"  
+            ]
         # htmlLines = input.readlines()
         ending = [
             "</div>\n)}"
@@ -110,11 +82,13 @@ def reactProcessor(input):
         html_txt = str(soup)
         # First Replace { and } with '&#123;' and '&#125;'
         html_txt = html_txt.replace('{', '&#123;').replace('}', '&#125;')
-
+        
         # Then find the first <img > tag and change the src to the right format of {}
         img_src_pattern = r'<img\s+([^>]*?)src="&#123;([^"]*)&#125;"(?:[^>]*)\s*\/>'
         replacement = r'<img \1src={\2} />'
         replaced_html = re.sub(img_src_pattern, replacement, html_txt)
+
+
 
 
         # Replace all <a> tag with <Link>, exclude ones with <a href="#"> as <Link> can't be used to point to sections under same page
@@ -125,6 +99,23 @@ def reactProcessor(input):
         pattern = r'<a\s+href="(?!.*?id="downloadData")(?!#)([^"]*)">(.*?)<\/a>'
         replacement = r'<Link to="\1">\2</Link>'
         replaced_html = re.sub(pattern, replacement, replaced_html)
+
+        # for gallery only, change path accordingly for other pacakges
+        img_pattern = re.compile(
+            r'<figure class="figure">\s*<p>\s*<img class="(img-fluid quarto-figure quarto-figure-center figure-img)" src="([^"]+).png"\s*/>\s*</p>\s*</figure>',
+            re.DOTALL
+        )
+
+        replacement = (
+            r'<figure className="figure">\n'
+            r'  <picture>\n'
+            r'    <source type="image/webp" srcset="https://s3.amazonaws.com/databrewer/media/\2.webp" />\n'
+            r'    <img className="\1" src="\2"/>\n'
+            r'  </picture>\n'
+            r'</figure>'
+        )
+        replaced_html = re.sub(img_pattern, replacement, replaced_html)
+
 
         # change all classname to class
         # adding = to exclude replacing classname and class outside tags

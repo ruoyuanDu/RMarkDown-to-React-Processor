@@ -84,9 +84,6 @@ def processor(input_file):
             replacement = r'</a></span><br />'
             text = re.sub(pattern, replacement, text)
 
-         
-
-
             # Remove <!-- /content --> before </div>
             text = re.sub(r'</div>\s*<!--\s*/content\s*-->', '</div>', text)
 

@@ -53,14 +53,14 @@ def reactProcessor(input):
                     "import React from 'react'; \n",
                     "import {Link} from 'react-router-dom'; \n",
                     # for dplyr
-                    "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
+                    # "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
                     # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
                     "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
                     "import img"+functionName+" from '../" + src + "'; \n", 
                     # capitalize the first letter of the filename for the function component
                     # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
                     "export default function " + functionName + "(){\n",
-                    "useRCustomEffect()\n",
+                    # "useRCustomEffect()\n",
                     "AddTabsetQuarto()\n",
                     "return ( <div>\n"  
                 ]
@@ -69,12 +69,12 @@ def reactProcessor(input):
                     "import React from 'react'; \n",
                     "import {Link} from 'react-router-dom'; \n",
                     # for dplyr
-                    "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
+                    # "import {useRCustomEffect} from '../../../useCustomEffect'; \n",
                     "import img"+functionName+" from '../" + src + "';\n\n", 
                     # capitalize the first letter of the filename for the function component
                     # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
                     "export default function " + functionName + "(){\n",
-                    "useRCustomEffect()\n",            
+                    # "useRCustomEffect()\n",            
                     "return ( <div>\n"  
                 ]
         else:
