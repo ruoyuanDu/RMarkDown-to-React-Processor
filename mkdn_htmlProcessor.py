@@ -91,14 +91,20 @@ def processor(input_file):
             output.write(text)
 
 def main():
-    parser = argparse.ArgumentParser(description="Process an HTML file.")
-    parser.add_argument("input_file", help="Input HTML file")
-    args = parser.parse_args()
-    processor(args.input_file)
+    # parser = argparse.ArgumentParser(description="Process an HTML file.")
+    # parser.add_argument("input_file", help="Input HTML file")
+    # args = parser.parse_args()
+    # processor(args.input_file)
+    folder_path = '/home/fagabby/working/1.DB_Processes/RMarkDownProcessor/input'
+    files = os.listdir(folder_path)
+    for filename in files:
+        if os.path.isfile(os.path.join(folder_path, filename)):
+            print(filename)
+            processor(filename)    
 
 if __name__ == "__main__":
     # main()
-    folder_path = './input'
+    folder_path = '/home/fagabby/working/1.DB_Processes/RMarkDownProcessor/input'
     files = os.listdir(folder_path)
     for filename in files:
         if os.path.isfile(os.path.join(folder_path, filename)):
