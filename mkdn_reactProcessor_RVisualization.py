@@ -15,31 +15,21 @@ def reactProcessor(input):
     with open(folder_path+input, 'r') as input:
         soup = BeautifulSoup(input, 'html.parser')
         img_tag = None
-        logo_imgs = []
-        for img in soup.find_all('img'):
-            # exclude the first a few logo <img> tags with class logo-diff 
-            if 'logo-diff' not in img.get('class', []):
-                img_tag = img
-                break
-            elif 'logo-diff' in img.get('class', []):
-                logo_imgs.append(img)
+        if soup.find('img'):
+            img_tag = soup.find('img')
             
         # img_tag = soup.find('img')
         # change the format of the first cover page <img> tag
         importing = []
-        if logo_imgs:           
-            for img in logo_imgs:
-                src = img['src']
-                src_words = src.split('/')
-                img_name = src_words[-1].split('.')[0].split('_')[-1]
-                new_src = f"{{img{img_name}}}"
-                img['src'] = ""
-                # Replace the src attribute with the desired value
-                img['src'] = new_src
-                importing.append(f"import img{img_name} from '{src}'; \n")
         if img_tag: 
             src = img_tag['src']
+            # for webp import path
+            src_webp = src.split('.')[0] + '.webp'
+ 
             new_src = f"{{img{functionName}}}"
+            # for webp 
+            new_src_webp = "{" + f"img{functionName}" + "Webp" + "}"
+
             img_tag['src'] = ""
             # Replace the src attribute with the desired value
             img_tag['src'] = new_src
@@ -47,60 +37,35 @@ def reactProcessor(input):
    
         # exclude case where img_tag is not found, so does src
         if img_tag:
-            # if soup.find('li', id='stepwise-instructions'):
-            if soup.find('ul', attrs={'role': 'tablist'}):            
-                beginning = importing + [
-                    "import React from 'react'; \n",
-                    "import {Link} from 'react-router-dom'; \n",
-                    "import {useRCustomEffect} from '../../useCustomEffect'; \n",
-                    # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
-                    "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
-                    "import img"+functionName+" from '../" + src + "'; \n", 
-                    # capitalize the first letter of the filename for the function component
-                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
-                    "export default function " + functionName + "(){\n",
-                    "useRCustomEffect()\n",
-                    "AddTabsetQuarto()\n",
-                    "return ( <div>\n"  
-                ]
-            else:
-                beginning = importing + [
-                    "import React from 'react'; \n",
-                    "import {Link} from 'react-router-dom'; \n",
-                    "import {useRCustomEffect} from '../../useCustomEffect'; \n",
-                    "import img"+functionName+" from '../" + src + "';\n\n", 
-                    # capitalize the first letter of the filename for the function component
-                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
-                    "export default function " + functionName + "(){\n",
-                    "useRCustomEffect()\n",            
-                    "return ( <div>\n"  
-                ]
-        else:
-            if soup.find('ul', attrs={'role': 'tablist'}):
-                beginning = importing + [
-                    "import React from 'react'; \n",
-                    "import {Link} from 'react-router-dom'; \n",
-                    "import {useRCustomEffect} from '../../useCustomEffect'; \n",
-                    # "import AddTabset from '../../js/addCodeFoldingTab'; \n",
-                    "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n\n",
-                    # capitalize the first letter of the filename for the function component
-                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
-                    "export default function " + functionName + "(){\n",
-                    "useRCustomEffect()\n",
-                    "AddTabsetQuarto()\n",
-                    "return ( <div>\n"  
-                ]
-            else:
-                beginning = importing + [
-                    "import React from 'react'; \n",
-                    "import {Link} from 'react-router-dom'; \n",
-                    "import {useRCustomEffect} from '../../useCustomEffect'; \n",
-                    # capitalize the first letter of the filename for the function component
-                    # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
-                    "export default function " + functionName + "(){\n",
-                    "useRCustomEffect()\n",            
-                    "return ( <div>\n"  
-                ]
+            # if soup.find('li', id='stepwise-instructions'):     
+            beginning = importing + [
+                "import React from 'react'; \n",
+                "import {Link} from 'react-router-dom'; \n",
+                "import {useRCustomEffect} from '../../useCustomEffect'; \n",
+                # "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n",
+                "import img"+functionName+" from '../" + src + "'; \n", 
+                "import img"+functionName+ "Webp"+ " from '../" + src_webp + "'; \n",  
+                # capitalize the first letter of the filename for the function component
+                # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
+                "export default function " + functionName + "(){\n",
+                "useRCustomEffect()\n",
+                # "AddTabsetQuarto()\n",
+                "return ( <div>\n"  
+            ]
+        else:     
+            beginning = importing + [
+                "import React from 'react'; \n",
+                "import {Link} from 'react-router-dom'; \n",
+                "import {useRCustomEffect} from '../../useCustomEffect'; \n",
+                # "import AddTabsetQuarto from '../../js/addCodeFoldingTabforQuarto'; \n\n",
+                # capitalize the first letter of the filename for the function component
+                # "export default function " +"R"+inputName.split('_')[0].capitalize()+"(){\n", 
+                "export default function " + functionName + "(){\n",
+                "useRCustomEffect()\n",
+                # "AddTabsetQuarto()\n",
+                "return ( <div>\n"  
+            ]
+        
         # htmlLines = input.readlines()
         ending = [
             "</div>\n)}"
@@ -126,6 +91,19 @@ def reactProcessor(input):
         replacement = r'<Link to="\1">\2</Link>'
         replaced_html = re.sub(pattern, replacement, replaced_html)
 
+        # add webp to the first image
+        if img_tag:
+            pattern = r'<p><img class="([^"]+)" src={([^"]+)} /></p>'
+            replacement = (
+                r'  <picture>\n'
+                f'    <source type="image/webp" srcset={new_src_webp} />\n'
+                f'    <img className="cover-img" src={new_src} />\n'
+                r'  </picture>\n'
+            )
+            replaced_html = re.sub(pattern, replacement, replaced_html)
+
+
+
         # change all classname to class
         # adding = to exclude replacing classname and class outside tags
         final_html = replaced_html.replace('classname=', 'class=')
@@ -133,14 +111,53 @@ def reactProcessor(input):
         final_html = final_html.replace('class=', 'className=')
         
         
-
         lines = beginning + [final_html] + ending
         # lines = beginning + htmlLines + ending
         text = ''.join(lines)
     with open('./outputReact/'+inputName+'_react.js', 'w') as output:
         output.write(text)
+
+    if img_tag:
+        return {'src': src, 'src_webp': src_webp}
         
 def main():
+    input_folder_path = "/home/fagabby/working/1.DB_Processes/RMarkDownProcessor/output"
+    importList = []
+    importImageList = []
+    importImageWebpList = []
+    dataList = []
+    files = os.listdir(input_folder_path)
+    for filename in files:
+        if os.path.isfile(os.path.join(input_folder_path, filename)):
+            img_path_dict = reactProcessor(filename)
+            words = filename.split('_')[0].split('-')
+            # remove numbers from the function name if any
+            words = [word for word in words if not word.isdigit()]
+            # Capitalize the first letter of each word and join them without hyphens
+            functionName = ''.join([word.capitalize() for word in words])
+            dataList.append(
+                {'component': '<'+functionName+' />', 'path':filename.split('_')[0], 'title':' '.join(filename.split('_')[0].split('-'))}
+            )
+            # for R Visualization
+            importList.append("import "+functionName+" from" + " '../RVisualization" + "/contents/"+ filename+"_react'")
+            if img_path_dict is not None:
+                importImageList.append("import img"+functionName+" from" + " '../Rvisualization/" + img_path_dict['src'] + "'")
+                importImageWebpList.append("import img"+functionName+"Webp from" + " '../Rvisualization/" + img_path_dict['src_webp'] + "'")
+    
+    # json_data = json.dumps(dataList, indent=2)
+    file_path = "data.js"
+
+    with open(file_path, 'w') as json_file:
+        json_file.write("import React from 'react';\n")
+        for item in importList:
+            json_file.write(str(item)+'\n')
+        json_file.write('const data=[')              
+        for item in dataList:
+            json_file.write(str(item)+',' + '\n')
+        json_file.write(']')
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process an HTML file.")
     parser.add_argument("--input_folder_path", default='')
     parser.add_argument("--input_file", default='', help="Input HTML file")
@@ -177,7 +194,3 @@ def main():
                 for item in dataList:
                     json_file.write(str(item)+',' + '\n')
                 json_file.write(']')
-
-
-if __name__ == "__main__":
-    main()

@@ -29,3 +29,21 @@ or
     Then output files will be saved in the extraIput folder. To continue further processing, copy and paste files from the extraInput folder to the input folder for step 2 and 3 above.
 
 UPDATE
+2024-06-15
+Add all_in_one.py script to streamline the process of removing any old files from the input, output folders, and then copy files with specified type to the input folder. Finally call the mkdn_htmlProcessor.py and corresponding mkdn_reactProcessor_??.py script to start processing files.
+When running the all_in_one.py script, it'll prompt to ask which package to choose from, enter folder names available under the path "~/Home/working/0.DataBrewer/".
+The script defaults to process html files, if you want to process another file, you can change the html_type variable in the script.
+
+# in order to remove the single quote '' in the data list, use vscode regular expression
+# pattern for component: '<([^']+)/>'
+# replacement: <$1 />
+
+# pattern for webp image: 'img([^']+)Webp'
+# replacement: img$1Webp
+
+# pattern for image: 'img([^']+)(?!Webp)'
+# replacement: img$1
+
+
+
+

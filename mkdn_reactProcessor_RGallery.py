@@ -98,64 +98,64 @@ def reactProcessor(input):
         pattern = r'<a\s+href="(?!.*?id="downloadData")(?!#)([^"]*)">(.*?)<\/a>'
         replacement = r'<Link to="\1">\2</Link>'
         replaced_html = re.sub(pattern, replacement, replaced_html)
+        if img_tag:
+            # add webp to the first image
+            pattern = r'<p><img class="([^"]+)" src={([^"]+)} /></p>'
+            replacement = (
+                r'  <picture>\n'
+                f'    <source type="image/webp" srcset={new_src_webp} />\n'
+                f'    <img className="cover-img" src={new_src} />\n'
+                r'  </picture>\n'
+            )
+            replaced_html = re.sub(pattern, replacement, replaced_html)
 
-        # add webp to the first image
-        pattern = r'<p><img class="([^"]+)" src={([^"]+)} /></p>'
-        replacement = (
-            r'  <picture>\n'
-            f'    <source type="image/webp" srcset={new_src_webp} />\n'
-            f'    <img className="cover-img" src={new_src} />\n'
-            r'  </picture>\n'
-        )
-        replaced_html = re.sub(pattern, replacement, replaced_html)
+            # add webp format for gallery only, change path accordingly for other pacakges
+            img_pattern = re.compile(
+                r'<figure class="figure">\s*<p>\s*<img class="(img-fluid quarto-figure quarto-figure-center figure-img)" src="([^"]+).png"\s*/>\s*</p>\s*</figure>',
+                re.DOTALL
+            )
 
-        # add webp format for gallery only, change path accordingly for other pacakges
-        img_pattern = re.compile(
-            r'<figure class="figure">\s*<p>\s*<img class="(img-fluid quarto-figure quarto-figure-center figure-img)" src="([^"]+).png"\s*/>\s*</p>\s*</figure>',
-            re.DOTALL
-        )
+            replacement = (
+                r'<figure className="figure">\n'
+                r'  <picture>\n'
+                r'    <source type="image/webp" srcset="https://s3.amazonaws.com/databrewer/media/\2.webp" />\n'
+                r'    <img className="\1" src="\2"/>\n'
+                r'  </picture>\n'
+                r'</figure>'
+            )
+            replaced_html = re.sub(img_pattern, replacement, replaced_html)
+            
+            # add webp format to images in the continue reading section
+            pattern = re.compile(
+                r'<p><Link to="([^"]+)"><img class="[^"]*" src="([^"]+)\.png"/></Link></p>',
+                re.DOTALL
+            )
+            replacement = (
+                r'<p><Link to="\1">\n'
+                # r'<figure className="figure">\n'
+                r'  <picture>\n'
+                r'    <source type="image/webp" srcset="https://s3.amazonaws.com/databrewer/media/\2.webp" />\n'
+                r'    <img className="img-fluid" src="https://s3.amazonaws.com/databrewer/media/\2.png" />\n'
+                r'  </picture>\n'
+                # r'</figure>\n'
+                r'</Link></p>'
+            )
+            replaced_html = re.sub(pattern, replacement, replaced_html)
 
-        replacement = (
-            r'<figure className="figure">\n'
-            r'  <picture>\n'
-            r'    <source type="image/webp" srcset="https://s3.amazonaws.com/databrewer/media/\2.webp" />\n'
-            r'    <img className="\1" src="\2"/>\n'
-            r'  </picture>\n'
-            r'</figure>'
-        )
-        replaced_html = re.sub(img_pattern, replacement, replaced_html)
-        
-        # add webp format to images in the continue reading section
-        pattern = re.compile(
-            r'<p><Link to="([^"]+)"><img class="[^"]*" src="([^"]+)\.png"/></Link></p>',
-            re.DOTALL
-        )
-        replacement = (
-            r'<p><Link to="\1">\n'
-            # r'<figure className="figure">\n'
-            r'  <picture>\n'
-            r'    <source type="image/webp" srcset="https://s3.amazonaws.com/databrewer/media/\2.webp" />\n'
-            r'    <img className="img-fluid" src="https://s3.amazonaws.com/databrewer/media/\2.png" />\n'
-            r'  </picture>\n'
-            # r'</figure>\n'
-            r'</Link></p>'
-        )
-        replaced_html = re.sub(pattern, replacement, replaced_html)
-
-        # This is another pattern inside the continue read section
-        pattern = re.compile(
-            r'<p><img class="[^"]*" src="([^"]+)\.png"/></p>',
-            re.DOTALL
-        )
-        replacement = (
-            r'<p>\n'
-            r'  <picture>\n'
-            r'    <source type="image/webp" srcset="https://s3.amazonaws.com/databrewer/media/\1.webp" />\n'
-            r'    <img className="img-fluid" src="https://s3.amazonaws.com/databrewer/media/\1.png" />\n'
-            r'  </picture>\n'
-            r'</p>'
-        )
-        replaced_html = re.sub(pattern, replacement, replaced_html)
+            # This is another pattern inside the continue read section
+            pattern = re.compile(
+                r'<p><img class="[^"]*" src="([^"]+)\.png"/></p>',
+                re.DOTALL
+            )
+            replacement = (
+                r'<p>\n'
+                r'  <picture>\n'
+                r'    <source type="image/webp" srcset="https://s3.amazonaws.com/databrewer/media/\1.webp" />\n'
+                r'    <img className="img-fluid" src="https://s3.amazonaws.com/databrewer/media/\1.png" />\n'
+                r'  </picture>\n'
+                r'</p>'
+            )
+            replaced_html = re.sub(pattern, replacement, replaced_html)
 
         # change all classname to class
         # adding = to exclude replacing classname and class outside tags
@@ -171,7 +171,7 @@ def reactProcessor(input):
     with open('./outputReact/'+inputName+'_react.js', 'w') as output:
         output.write(text)
 
-    if src and src_webp:
+    if img_tag:
         return {'src': src, 'src_webp': src_webp}
         
 def main():
@@ -185,37 +185,45 @@ def main():
     # else:
     #     if args.input_folder_path:
     importList = []
+    importImageList = []
+    importImageWebpList = []
     dataList = []
     # files = os.listdir(args.input_folder_path)
     files = os.listdir(input_folder_path)
     for filename in files:
-        if os.path.isfile(os.path.join(input_folder_path, filename)):
-            reactProcessor(filename)
+        if os.path.isfile(os.path.join(args.input_folder_path, filename)):
+            img_path_dict = reactProcessor(filename)
             words = filename.split('_')[0].split('-')
             # remove numbers from the function name if any
             words = [word for word in words if not word.isdigit()]
             # Capitalize the first letter of each word and join them without hyphens
             functionName = ''.join([word.capitalize() for word in words])
             dataList.append(
-                {'component': '<'+functionName+' />', 'path':filename.split('_')[0], 'title':' '.join(filename.split('_')[0].split('-'))}
+                {'component': '<'+functionName+' />', 'path':filename.split('_')[0], 'title':' '.join(filename.split('_')[0].split('-')), 'cover':f"img{functionName}" ,'cover_webp': f"img{functionName}Webp"}
             )
             # for gallery
+
             importList.append("import "+functionName+" from" + " '../RgalleryPages" + "/contents/"+ filename+"_react'")
-            importImageList.append("import img"+functionName+" from" + " '../RgalleryPages/" + img_path_dict['src'] + "'")
-            importImageWebpList.append("import img"+functionName+"Webp from" + " '../RgalleryPages/" + img_path_dict['src_webp'] + "'")
+            if img_path_dict is not None:
+                importImageList.append("import img"+functionName+" from" + " '../RgalleryPages/" + img_path_dict['src'] + "'")
+                importImageWebpList.append("import img"+functionName+"Webp from" + " '../RgalleryPages/" + img_path_dict['src_webp'] + "'")
+            # in order to remove the single quote '' in the data list, use vscode regular expression
+            # pattern: '<img([^']+)/>'
+            # replacement: <img$1 />
 
         importList = importList + importImageList + importImageWebpList
-    # json_data = json.dumps(dataList, indent=2)
-    file_path = "data.js"
+        # json_data = json.dumps(dataList, indent=2)
+        file_path = "data.js"
 
-    with open(file_path, 'w') as json_file:
-        json_file.write("import React from 'react';\n")
-        for item in importList:
-            json_file.write(str(item)+'\n')
-        json_file.write('const data=[')              
-        for item in dataList:
-            json_file.write(str(item)+',' + '\n')
-        json_file.write(']')
+        with open(file_path, 'w') as json_file:
+            json_file.write("import React from 'react';\n")
+            for item in importList:
+                json_file.write(str(item)+'\n')
+            json_file.write('const data=[')              
+            for item in dataList:
+                json_file.write(str(item)+',' + '\n')
+                print(item)
+            json_file.write(']')
 
 
 if __name__ == "__main__":
